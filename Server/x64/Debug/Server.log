@@ -1,0 +1,26 @@
+﻿  GameRoom.cpp
+  Server.cpp
+D:\unreal\Server_Unreal\MMORPG2\ServerCore\Listener.h(1,1): warning C4828: 파일에 0xee 오프셋에서 시작하는 문자가 포함되어 있습니다. 이 문자는 현재 원본 문자 집합에서 잘못된 문자입니다(코드 페이지 65001).
+D:\unreal\Server_Unreal\MMORPG2\ServerCore\Listener.h(1,1): warning C4828: 파일에 0xf3 오프셋에서 시작하는 문자가 포함되어 있습니다. 이 문자는 현재 원본 문자 집합에서 잘못된 문자입니다(코드 페이지 65001).
+D:\unreal\Server_Unreal\MMORPG2\ServerCore\Listener.h(1,1): warning C4828: 파일에 0xf4 오프셋에서 시작하는 문자가 포함되어 있습니다. 이 문자는 현재 원본 문자 집합에서 잘못된 문자입니다(코드 페이지 65001).
+D:\unreal\Server_Unreal\MMORPG2\ServerCore\Listener.h(1,1): warning C4828: 파일에 0xf5 오프셋에서 시작하는 문자가 포함되어 있습니다. 이 문자는 현재 원본 문자 집합에서 잘못된 문자입니다(코드 페이지 65001).
+D:\unreal\Server_Unreal\MMORPG2\ServerCore\Listener.h(1,1): warning C4828: 파일에 0xf7 오프셋에서 시작하는 문자가 포함되어 있습니다. 이 문자는 현재 원본 문자 집합에서 잘못된 문자입니다(코드 페이지 65001).
+D:\unreal\Server_Unreal\MMORPG2\ServerCore\Listener.h(1,1): warning C4828: 파일에 0xf8 오프셋에서 시작하는 문자가 포함되어 있습니다. 이 문자는 현재 원본 문자 집합에서 잘못된 문자입니다(코드 페이지 65001).
+D:\unreal\Server_Unreal\MMORPG2\ServerCore\Listener.h(1,1): warning C4828: 파일에 0x153 오프셋에서 시작하는 문자가 포함되어 있습니다. 이 문자는 현재 원본 문자 집합에서 잘못된 문자입니다(코드 페이지 65001).
+D:\unreal\Server_Unreal\MMORPG2\ServerCore\Listener.h(1,1): warning C4828: 파일에 0x154 오프셋에서 시작하는 문자가 포함되어 있습니다. 이 문자는 현재 원본 문자 집합에서 잘못된 문자입니다(코드 페이지 65001).
+D:\unreal\Server_Unreal\MMORPG2\ServerCore\Listener.h(1,1): warning C4828: 파일에 0x156 오프셋에서 시작하는 문자가 포함되어 있습니다. 이 문자는 현재 원본 문자 집합에서 잘못된 문자입니다(코드 페이지 65001).
+D:\unreal\Server_Unreal\MMORPG2\ServerCore\Listener.h(1,1): warning C4828: 파일에 0x158 오프셋에서 시작하는 문자가 포함되어 있습니다. 이 문자는 현재 원본 문자 집합에서 잘못된 문자입니다(코드 페이지 65001).
+D:\unreal\Server_Unreal\MMORPG2\ServerCore\Listener.h(1,1): warning C4828: 파일에 0x15b 오프셋에서 시작하는 문자가 포함되어 있습니다. 이 문자는 현재 원본 문자 집합에서 잘못된 문자입니다(코드 페이지 65001).
+D:\unreal\Server_Unreal\MMORPG2\ServerCore\Listener.h(1,1): warning C4828: 파일에 0x15c 오프셋에서 시작하는 문자가 포함되어 있습니다. 이 문자는 현재 원본 문자 집합에서 잘못된 문자입니다(코드 페이지 65001).
+D:\unreal\Server_Unreal\MMORPG2\ServerCore\Listener.h(1,1): warning C4828: 파일에 0x15e 오프셋에서 시작하는 문자가 포함되어 있습니다. 이 문자는 현재 원본 문자 집합에서 잘못된 문자입니다(코드 페이지 65001).
+D:\unreal\Server_Unreal\MMORPG2\ServerCore\Listener.h(1,1): warning C4828: 파일에 0x15f 오프셋에서 시작하는 문자가 포함되어 있습니다. 이 문자는 현재 원본 문자 집합에서 잘못된 문자입니다(코드 페이지 65001).
+D:\unreal\Server_Unreal\MMORPG2\ServerCore\Listener.h(1,1): warning C4828: 파일에 0x160 오프셋에서 시작하는 문자가 포함되어 있습니다. 이 문자는 현재 원본 문자 집합에서 잘못된 문자입니다(코드 페이지 65001).
+D:\unreal\Server_Unreal\MMORPG2\ServerCore\Listener.h(1,1): warning C4828: 파일에 0x1f3 오프셋에서 시작하는 문자가 포함되어 있습니다. 이 문자는 현재 원본 문자 집합에서 잘못된 문자입니다(코드 페이지 65001).
+D:\unreal\Server_Unreal\MMORPG2\ServerCore\Listener.h(1,1): warning C4828: 파일에 0x1f4 오프셋에서 시작하는 문자가 포함되어 있습니다. 이 문자는 현재 원본 문자 집합에서 잘못된 문자입니다(코드 페이지 65001).
+D:\unreal\Server_Unreal\MMORPG2\ServerCore\Listener.h(1,1): warning C4828: 파일에 0x1f8 오프셋에서 시작하는 문자가 포함되어 있습니다. 이 문자는 현재 원본 문자 집합에서 잘못된 문자입니다(코드 페이지 65001).
+D:\unreal\Server_Unreal\MMORPG2\ServerCore\Listener.h(1,1): warning C4828: 파일에 0x1f9 오프셋에서 시작하는 문자가 포함되어 있습니다. 이 문자는 현재 원본 문자 집합에서 잘못된 문자입니다(코드 페이지 65001).
+D:\unreal\Server_Unreal\MMORPG2\ServerCore\Listener.h(1,1): warning C4828: 파일에 0x1fa 오프셋에서 시작하는 문자가 포함되어 있습니다. 이 문자는 현재 원본 문자 집합에서 잘못된 문자입니다(코드 페이지 65001).
+D:\unreal\Server_Unreal\MMORPG2\ServerCore\Listener.h(1,1): warning C4828: 파일에 0x1fb 오프셋에서 시작하는 문자가 포함되어 있습니다. 이 문자는 현재 원본 문자 집합에서 잘못된 문자입니다(코드 페이지 65001).
+D:\unreal\Server_Unreal\MMORPG2\Server\Server.cpp(66,17): warning C4305: '인수': 'double'에서 'float'(으)로 잘립니다.
+  코드를 생성하고 있습니다...
+  Server.vcxproj -> D:\unreal\Server_Unreal\MMORPG2\Server\Binaries\x64\Server.exe

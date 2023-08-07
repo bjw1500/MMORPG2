@@ -1,0 +1,229 @@
+syntax = "proto3";
+package Protocol;
+
+enum ObjectType
+{
+		PLAYER = 0;
+		MONSTER = 1;
+		ITEM= 2;
+		UNKNOWN = 3;
+}
+
+
+enum Packet_ID
+{
+	S_TEST = 0;
+	S_ENTER_ROOM = 1;
+	C_ENTER_ROOM = 2;
+	S_MOVE = 3;
+	C_MOVE= 4;
+	S_DISCONNECT = 5;
+	C_DISCONNECT = 6;
+	S_SPAWN_MY_PLAYER = 7;
+	S_ADDOBJECTS = 8;
+	S_DEWSPAWN = 9;
+	C_SKILL = 10;
+	S_SKILL = 11;
+	C_CHANGEDHP = 12;
+	S_CHANGEDHP = 13;
+	S_CONNECT= 14;
+	C_TRYLOGIN = 15;
+	S_SUCCESSLOGIN = 16;
+	S_FAILEDLOGIN = 17;
+	C_CREATEACCOUNT = 18;
+	S_CREATEACCOUNT = 19;
+	C_CHAT = 20;
+	S_CHAT = 21;
+	S_UPDATEMONSTER = 22;
+}
+
+enum Skill_ID
+{
+	JUMP = 0;
+	ATTACK = 1;
+	ROLL = 2;
+
+}
+
+enum CreatureState
+{
+	Idle = 0;
+	Move = 1;
+	Attack = 2;
+	Dead = 3;
+}
+
+message S_Test
+{
+	uint64 id = 1;
+	uint32 hp = 2;
+	uint32 attack = 3;
+}
+
+message S_EnterRoom
+{
+		
+
+}
+
+message C_EnterRoom
+{
+	int32 CharacterId = 1;
+	
+}
+
+message S_Move
+{
+	ObjectInfo info = 1;
+}
+
+message C_Move
+{
+	ObjectInfo info = 1;
+}
+
+message S_Disconnect
+{
+	ObjectInfo info = 1;
+}
+
+message C_Disconnect
+{
+	ObjectInfo info = 1;
+}
+
+message S_SpawnMyPlayer
+{
+	ObjectInfo info = 1;
+
+}
+
+message S_AddObjects
+{
+	repeated ObjectInfo objects = 1;
+}
+
+message S_Despawn
+{
+	repeated ObjectInfo objects = 1;
+}
+
+message C_Skill
+{
+	ObjectInfo info = 1;
+	int32 skillId = 2;
+}
+
+message S_Skill
+{
+	ObjectInfo info = 1;
+	int32 skillId = 2;
+}
+
+message C_ChangedHP
+{
+	ObjectInfo Target = 1;
+	ObjectInfo DamageCauser = 2;
+	int32 DamageAmount = 3;
+}
+
+message S_ChangedHP
+{
+		ObjectInfo Target = 1;
+	ObjectInfo DamageCauser = 2;
+	int32 DamageAmount = 3;
+}
+
+message S_Connect
+{
+	string Info = 1;
+}
+
+message C_TryLogin
+{
+	string Id = 1;
+	string Password = 2;
+}
+
+message S_SuccessLogin
+{
+	string Info = 1;
+}
+message S_FailedLogin
+{
+	string Info = 1;
+}
+
+message C_CreateAccount
+{
+	string Id = 1;
+	string Password = 2;
+}
+
+message S_CreateAccount
+{
+	string Id = 1;
+	string Password = 2;
+	int32 	result = 3;
+	string msg = 4;
+}
+
+message C_Chat
+{
+	int32 Id = 1;
+	string msg = 2;
+}
+
+message S_Chat
+{
+	int32 Id = 1;
+	string Name = 2;
+	string msg = 3;
+}
+
+message S_UpdateMonster
+{
+	ObjectInfo info = 1;
+}
+
+
+message ObjectInfo
+{
+	int32 id = 1;
+	string name = 2;
+	ObjectType type= 3;
+	Position position= 4;
+	Stat stat = 5;
+	int32 targetId = 6;
+	CreatureState State = 7;
+}
+
+
+message Position
+{
+	double LocationX = 1;
+	double LocationY = 2;
+	double LocationZ = 3;
+
+	double RotationX = 4;
+	double RotationY = 5;
+	double RotationZ = 6;
+
+	double VelocityX = 7;
+	double VelocityY = 8;
+	double VelocityZ = 9;
+
+}
+
+message Stat
+{
+	int32 Level = 1;
+	int32 MaxHp = 2;
+	int32 Hp = 3;
+	float Damage = 4;
+	float AttackRange = 5;
+	float SearchRange = 6;
+	string Name = 7;
+	float MoveSpeed = 8;
+}
+

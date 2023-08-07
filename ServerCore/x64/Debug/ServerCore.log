@@ -1,0 +1,19 @@
+﻿  pch.cpp
+  BufferReader.cpp
+  BufferWriter.cpp
+  CoreGlobal.cpp
+  CoreMacro.cpp
+  CorePch.cpp
+  CoreTLS.cpp
+  IocpCore.cpp
+  IocpEvent.cpp
+  Listener.cpp
+  NetAddress.cpp
+  RecvBuffer.cpp
+  SendBuffer.cpp
+  Service.cpp
+  Session.cpp
+  SocketUtils.cpp
+  ThreadManager.cpp
+  코드를 생성하고 있습니다...
+  ServerCore.vcxproj -> D:\unreal\Server_Unreal\MMORPG2\Server\Libraries\ServerCore\Debug\ServerCore.lib
