@@ -8,7 +8,7 @@ public class MMORPG2 : ModuleRules
 	{
 		PCHUsage = PCHUsageMode.UseExplicitOrSharedPCHs;
 	
-		PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore" , "Protobuf", "EnhancedInput" , "AIModule", "GamePlayTasks","NavigationSystem" });
+		PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore" , "Protobuf", "EnhancedInput" , "AIModule", "GameplayTasks","NavigationSystem" });
 
 		PrivateDependencyModuleNames.AddRange(new string[] { });
 

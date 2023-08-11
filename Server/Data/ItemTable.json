@@ -1,0 +1,18 @@
+[
+	{
+		"Name": "1",
+		"Id": 1,
+		"Damage": 10,
+		"Armor": 0,
+		"ItemType": "WEAPON",
+		"Model": "/Script/Engine.BlueprintGeneratedClass'/Game/Blueprints/Item/Weapon/BP_Blade.BP_Blade_C'"
+	},
+	{
+		"Name": "2",
+		"Id": 2,
+		"Damage": 10,
+		"Armor": 0,
+		"ItemType": "WEAPON",
+		"Model": "/Script/Engine.BlueprintGeneratedClass'/Game/Blueprints/Item/Weapon/BP_Axe.BP_Axe_C'"
+	}
+]

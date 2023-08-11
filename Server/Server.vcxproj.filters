@@ -24,6 +24,9 @@
     <Filter Include="소스 파일\DB">
       <UniqueIdentifier>{966c2d78-f94b-412f-bc0d-9efb6f02a65f}</UniqueIdentifier>
     </Filter>
+    <Filter Include="소스 파일\Data">
+      <UniqueIdentifier>{9a206485-d367-4561-8c87-d665c2e607db}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -68,6 +71,12 @@
     <ClCompile Include="Account.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
+    <ClCompile Include="DataManager.cpp">
+      <Filter>소스 파일\Data</Filter>
+    </ClCompile>
+    <ClCompile Include="DataContents.cpp">
+      <Filter>소스 파일\Data</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h">
@@ -107,15 +116,15 @@
       <Filter>소스 파일\DB</Filter>
     </ClInclude>
     <ClInclude Include="Account.h" />
+    <ClInclude Include="DataManager.h">
+      <Filter>소스 파일\Data</Filter>
+    </ClInclude>
+    <ClInclude Include="DataContents.h">
+      <Filter>소스 파일\Data</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\..\Common\protoc-21.12-win64\bin\GenPackets.bat">
-      <Filter>소스 파일\Protobuf</Filter>
-    </None>
-    <None Include="..\..\Common\protoc-21.12-win64\bin\protoc.exe">
-      <Filter>소스 파일\Protobuf</Filter>
-    </None>
-    <None Include="..\..\Common\protoc-21.12-win64\bin\Protocol.proto">
+    <None Include="..\Common\protoc-21.12-win64\bin\Protocol.proto">
       <Filter>소스 파일\Protobuf</Filter>
     </None>
   </ItemGroup>

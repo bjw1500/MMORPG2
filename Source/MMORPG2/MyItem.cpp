@@ -5,6 +5,9 @@
 #include "MyItem.h"
 #include "Components/StaticMeshComponent.h"
 #include "Components/SphereComponent.h"
+#include "Network/Protocol.pb.h"
+#include "Network/GameManager.h"
+#include "Managers/DataManager.h"
 #include "Creature.h"
 
 // Sets default values
@@ -23,6 +26,7 @@ AMyItem::AMyItem()
 	SphereCollision->SetCollisionProfileName(TEXT("Item"));
 	SphereCollision->SetSphereRadius(10.0f);
 	SphereCollision->OnComponentBeginOverlap.AddDynamic(this, &AMyItem::OnCharacterOverlap);
+	SphereCollision->OnComponentEndOverlap.AddDynamic(this, &AMyItem::OnCharacterOverlapEnd);
 
 }
 
@@ -30,10 +34,9 @@ AMyItem::AMyItem()
 void AMyItem::BeginPlay()
 {
 	Super::BeginPlay();
-	GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Yellow, TEXT("My ITem Begin"));
 	//TODO
 	//나중에 데이터 시트를 만들어서 서버에서 뿌려주는 정보대로 로드되게 해보자.
-	LoadItemInfo(1);
+	//LoadItemInfo(1);
 }
 
 void AMyItem::PostInitializeComponents()
@@ -47,8 +50,6 @@ void AMyItem::OnCharacterOverlap(UPrimitiveComponent* OverlappedComponent, AActo
 	//플레이어가 아이템을 지니고 있는 상태라면,
 	if (IsValid(Master) == true)
 		return;
-
-	GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Yellow, TEXT("Overlap"));
 	ACreature* player = Cast<ACreature>(OtherActor);
 
 	if (IsValid(player) == false)
@@ -56,7 +57,22 @@ void AMyItem::OnCharacterOverlap(UPrimitiveComponent* OverlappedComponent, AActo
 	if (player->ThisMasterOtherClient == true)
 		return;
 
-	player->ShowNearItem();
+	player->FindNearItem(this);
+}
+
+void AMyItem::OnCharacterOverlapEnd(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
+{
+	//플레이어가 아이템을 지니고 있는 상태라면,
+	if (IsValid(Master) == true)
+		return;
+	ACreature* player = Cast<ACreature>(OtherActor);
+
+	if (IsValid(player) == false)
+		return;
+	if (player->ThisMasterOtherClient == true)
+		return;
+
+	player->LoseNearItem(this);
 }
 
 void AMyItem::LoadItemInfo(int32 id)
@@ -67,6 +83,7 @@ void AMyItem::LoadItemInfo(int32 id)
 	if(WeaponMesh == nullptr)
 	WeaponMesh =
 		Cast<USkeletalMesh>(StaticLoadObject(USkeletalMesh::StaticClass(), NULL, TEXT("/Game/InfinityBladeWeapons/Weapons/Blade/Swords/Blade_BlackKnight/SK_Blade_BlackKnight.SK_Blade_BlackKnight")));
+
 
 	if (IsValid(WeaponMesh) == false)
 	{
@@ -79,5 +96,9 @@ void AMyItem::LoadItemInfo(int32 id)
 		WeaponMeshComponent->SetSkeletalMesh(WeaponMesh);
 	}
 
+	//Item Info
+	Protocol::ItemInfo info;
+	info.set_name("Blade");
+	SetItemInfo(info);
 }
 

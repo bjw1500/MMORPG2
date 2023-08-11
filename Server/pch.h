@@ -2,6 +2,7 @@
 
 #include "CorePch.h"
 #include "Protocol.pb.h"
+#include "json/json.h"
 
 
 using GameSessionRef = std::shared_ptr<class GameSession>;
@@ -14,7 +15,8 @@ using CreatureRef = std::shared_ptr<class Creature>;
 using namespace Protocol;
 
 extern class DBConnectionPool* GDBConnectionPool;
-
+extern class DataManager* GDataManager;
+#pragma comment(lib, "Json\\jsoncpp.lib")
 #pragma comment(lib, "Protobuf\\Debug\\libprotobufd.lib")
 
 #ifdef _DEBUG
@@ -26,3 +28,5 @@ extern class DBConnectionPool* GDBConnectionPool;
 #endif
 
 #include "ServerPacketHandler.h"
+
+

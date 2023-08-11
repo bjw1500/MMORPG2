@@ -2,3 +2,4 @@
 
 
 DBConnectionPool* GDBConnectionPool = nullptr;
+DataManager* GDataManager = nullptr;

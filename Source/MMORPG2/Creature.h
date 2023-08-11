@@ -119,24 +119,28 @@ public:
 		Stat->SetInfo();
 	}
 
-	void									UseSkill(Protocol::Skill_ID id);
-	void									AttackCheck();
-	virtual  float					TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser) override;
+	void UseSkill(Protocol::Skill_ID id);
+	void AttackCheck();
+	virtual  float TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser) override;
 
 
-	void									ShowNearItem();
-	void									PickUpItem();
+	void FindNearItem(class AMyItem* item);
+	void LoseNearItem(class AMyItem* item);
 
-	virtual void									UpdateInfo(Protocol::ObjectInfo* info);
-	void									UpdatePlayerSkill(int32 skillId);
+	void PickUpItem();
+	void CreateItem();
+
+	virtual void	UpdateInfo(Protocol::ObjectInfo* info);
+	void UpdatePlayerSkill(int32 skillId);
 
 
-	bool ThisMasterOtherClient = true;
+	bool ThisMasterOtherClient = false;
 protected:
 	
 	Protocol::ObjectInfo Info;
 	FName WeaponSocket = (TEXT("LeftHandWeaponSocket"));
 	TWeakObjectPtr<class AMyItem> CurrentUseItem;
+	TArray<class AMyItem*> CanPickUpItemList;
 };
 
 

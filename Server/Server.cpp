@@ -14,6 +14,7 @@ using namespace std;
 #include "ServerPacketHandler.h"
 #include "DBConnection.h"
 #include "DBConnectionPool.h"
+#include "DataManager.h"
 #include "GameRoom.h"
 
 
@@ -25,6 +26,10 @@ int main()
 	GDBConnectionPool = new DBConnectionPool();
 	//DB 테스트
 	ASSERT_CRASH(GDBConnectionPool->Connect(1, L"Driver={SQL Server Native Client 11.0};Server=(localdb)\\MSSQLLocalDB;Database=Unreal_Server;Trusted_Connection=Yes;"));
+
+	GDataManager = new DataManager();
+	//GDataManager->MakeJsonTest();
+
 
 	SocketUtils::Init();
 
@@ -48,17 +53,7 @@ int main()
 			});
 	}
 
-	//char sendData[1000] = "Hello World";
-
-	//while (true)
-	//{
-	//	SendBufferRef sendBuffer = ServerPacketHandler::Make_S_TEST(99, 100, 10);
-	//	GSessionManager.Broadcast(sendBuffer);
-	//	this_thread::sleep_for(1000ms);
-	//}
-
 	GRoom->EnterMonster();
-
 
 	//게임 Update
 	while (true)

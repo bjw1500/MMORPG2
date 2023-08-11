@@ -6,6 +6,8 @@
 #include "GameRoom.h"
 #include "GameSession.h"
 #include <format>
+#include "DataContents.h"
+#include "DataManager.h"
 #include "Account.h"
 
 atomic<int32> _objectId = 1;
@@ -26,9 +28,10 @@ GameRoom::~GameRoom()
 
 }
 
+
+//게임 업데이트는 메인 쓰레드에서 진행하므로 락이 필요 없다.
 void GameRoom::Update(float deltaTime)
 {
-
 	_deltaTime = deltaTime;
 	for (auto player : _players)
 	{
@@ -46,7 +49,6 @@ void GameRoom::Update(float deltaTime)
 
 void GameRoom::EnterPlayer(GameSessionRef session)
 {
-
 	lock_guard<mutex> gaurd(_lock);
 
 	PlayerRef newPlayer = CreatePlayer(session);
@@ -110,13 +112,19 @@ void GameRoom::EnterPlayer(GameSessionRef session)
 
 void GameRoom::EnterMonster()
 {
+	lock_guard<mutex> gaurd(_lock);
+
 	shared_ptr<Monster> newMonster = make_shared<Monster>();
+	MonsterData data = GDataManager->MonsterTable[1];
+
 	ObjectInfo newInfo;
+
 	newInfo.set_id(_objectId++);
 	newInfo.set_type(ObjectType::MONSTER);
-	string name = "Monster_" + newInfo.id();
+	string name = data.MonsterName + to_string(newInfo.id());
 	newInfo.set_name(name);
 	newInfo.set_state(CreatureState::Idle);
+	newInfo.set_templateid(data.Id);
 
 	printf("ID [%d] , Name [%s] 몬스터 생성\n", newInfo.id(), newInfo.name().c_str());
 
@@ -133,17 +141,8 @@ void GameRoom::EnterMonster()
 	position->set_velocityy(0);
 	position->set_velocityz(0);
 
-	//TODO 나중에 데이터 시트 연동해서 몬스터 정보를 로드해주기.
-	//하지만 지금은 데이터 시트가 없으므로 그냥 직접 값을 넣어준다.
 	Stat* stat = newInfo.mutable_stat();
-	stat->set_hp(100);
-	stat->set_maxhp(100);
-	stat->set_damage(10);
-	stat->set_level(1);
-	stat->set_name("Bear");
-	stat->set_searchrange(1000);
-	stat->set_attackrange(300);
-	stat->set_movespeed(100);
+	stat->CopyFrom(data.Stat);
 
 	newMonster->SetInfo(newInfo);
 	AddObject(newMonster);
@@ -214,7 +213,6 @@ PlayerRef GameRoom::CreatePlayer(GameSessionRef session)
 	stat->set_maxhp(100);
 	stat->set_damage(10);
 	stat->set_level(1);
-	stat->set_name("Player");
 
 	//나중에 Json 연동해서 몬스터 정보 관리해주기
 
@@ -286,7 +284,7 @@ void GameRoom::HandleChangedHP(Protocol::C_ChangedHP changedPacket)
 
 	//printf("%s가 %s한테 공격당했습니다! %d! \n", player->GetInfo().name().c_str(), damageCasuer->GetInfo().name().c_str(), changedPacket.damageamount());
 
-	player->Ondamaged(damageCasuer->GetInfo(), changedPacket.damageamount());
+	player->OnDamaged(damageCasuer->GetInfo(), changedPacket.damageamount());
 
 	Protocol::S_ChangedHP pkt;
 	Protocol::ObjectInfo* pkt_target = pkt.mutable_target();
@@ -308,6 +306,8 @@ void GameRoom::HandleChangedHP(Protocol::C_ChangedHP changedPacket)
 
 void GameRoom::HandleChat(Protocol::C_Chat chatPacket)
 {
+	lock_guard<mutex> gaurd(_lock);
+
 	Protocol::S_Chat pkt;
 
 	PlayerRef player = static_pointer_cast<Player>(FindObjectById(chatPacket.id()));
@@ -330,6 +330,8 @@ void GameRoom::HandleChat(Protocol::C_Chat chatPacket)
 
 void GameRoom::Remove(Protocol::ObjectInfo info)
 {
+	lock_guard<mutex> gaurd(_lock);
+
 	Protocol::ObjectType type = info.type();
 
 	switch (type)

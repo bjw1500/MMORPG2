@@ -9,7 +9,9 @@ public:
 	Creature();
 	~Creature();
 	
-	void Ondamaged(Protocol::ObjectInfo damageCasuer, int32 damageAmount);
+	void OnDamaged(Protocol::ObjectInfo damageCauser, int32 damageAmount);
+	void OnDead(Protocol::ObjectInfo damageCauser);
+
 	void BindTarget(shared_ptr<Creature> target);
 	void UnBindTarget();
 

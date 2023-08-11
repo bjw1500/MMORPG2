@@ -55,7 +55,7 @@ void UStatComponent::OnDamaged(float DamageAmount, FDamageEvent const& DamageEve
 		SetHp(hp);
 	else
 	{
-		if (Master->GetInfo()->type() != Protocol::ObjectType::MONSTER &&Master->ThisMasterOtherClient == true)
+		if (Master->GetInfo()->type() == Protocol::ObjectType::PLAYER &&Master->ThisMasterOtherClient == true)
 			return;
 
 		ACreature* causer = Cast<ACreature>(DamageCauser);

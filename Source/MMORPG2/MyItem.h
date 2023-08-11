@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+#include "Network/Protocol.pb.h"
 #include "MyItem.generated.h"
 
 UCLASS()
@@ -35,13 +36,23 @@ public:
 	UFUNCTION()
 	virtual void OnCharacterOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
    
+	// declare overlap end function
+	UFUNCTION()
+	void OnCharacterOverlapEnd(class UPrimitiveComponent* OverlappedComp, class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
 	
 
 public:
 	void LoadItemInfo(int32 id);
 
+	void SetItemInfo(Protocol::ItemInfo& info) { _itemInfo.CopyFrom(info); }
+	Protocol::ItemInfo& GetItemInfo() { return _itemInfo; }
+
 
 public:
 	class ACreature* Master;
+
+
+private:
+	Protocol::ItemInfo _itemInfo;
 
 };

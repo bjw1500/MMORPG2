@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "../StatComponent.h"
+#include "../GameStruct.h"
 
 /**
  * 
@@ -17,8 +18,12 @@ public:
 	void Init();
 
 	FStatData* GetStat(int32 level);
+	FItemData* GetItemData(int32 id);
+	FMonsterData* GetMonsterData(int32 id);
 
 
 private:
 	class UDataTable* StatTable;
+	class UDataTable* MonsterTable;
+	class UDataTable* ItemTable;
 };

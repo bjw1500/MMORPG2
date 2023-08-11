@@ -22,6 +22,7 @@ public:
 	void Handle_S_SpawnMyPlayer(PacketMessage packet);
 	void Handle_S_AddObjects(PacketMessage packet);
 	void Handle_S_Despawn(PacketMessage packet);
+	void Handle_S_Die(PacketMessage packet);
 	void Handle_S_Disconnect(PacketMessage packet);
 	void Handle_S_Move(PacketMessage packet);
 	void Handle_S_Skill(PacketMessage packet);

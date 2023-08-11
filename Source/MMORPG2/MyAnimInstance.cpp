@@ -56,3 +56,11 @@ void UMyAnimInstance::AnimNotify_AttackHit()
 	//Attack Check 해주기.
 
 }
+
+void UMyAnimInstance::SetState(Protocol::CreatureState state)
+{
+	if (state == Protocol::CreatureState::Dead)
+		IsDead = true;
+
+
+}

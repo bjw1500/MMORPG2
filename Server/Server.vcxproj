@@ -151,6 +151,8 @@
   <ItemGroup>
     <ClCompile Include="Account.cpp" />
     <ClCompile Include="Creature.cpp" />
+    <ClCompile Include="DataContents.cpp" />
+    <ClCompile Include="DataManager.cpp" />
     <ClCompile Include="DBConnection.cpp" />
     <ClCompile Include="DBConnectionPool.cpp" />
     <ClCompile Include="GameObject.cpp" />
@@ -173,6 +175,8 @@
   <ItemGroup>
     <ClInclude Include="Account.h" />
     <ClInclude Include="Creature.h" />
+    <ClInclude Include="DataContents.h" />
+    <ClInclude Include="DataManager.h" />
     <ClInclude Include="DBConnection.h" />
     <ClInclude Include="DBConnectionPool.h" />
     <ClInclude Include="GameObject.h" />
@@ -186,9 +190,7 @@
     <ClInclude Include="ServerPacketHandler.h" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\..\Common\protoc-21.12-win64\bin\GenPackets.bat" />
-    <None Include="..\..\Common\protoc-21.12-win64\bin\protoc.exe" />
-    <None Include="..\..\Common\protoc-21.12-win64\bin\Protocol.proto" />
+    <None Include="..\Common\protoc-21.12-win64\bin\Protocol.proto" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

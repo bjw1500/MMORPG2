@@ -1,0 +1,24 @@
+[
+	{
+		"Name": "1",
+		"Id": 1,
+		"MonsterName": "Bear",
+		"Stat":
+		{
+			"Level": 1,
+			"MaxHp": 100,
+			"TotalExp": 10,
+			"Attack": 10,
+			"Speed": 200,
+			"SearchRange": 1000,
+			"AttackRange": 200
+		},
+		"Reward":
+		{
+			"ItemDropRate": 10,
+			"Id": 1,
+			"Count": 1
+		},
+		"Model": "/Script/Engine.BlueprintGeneratedClass'/Game/Blueprints/BP_Bear.BP_Bear_C'"
+	}
+]

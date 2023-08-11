@@ -10,20 +10,39 @@ Creature::~Creature()
 {
 }
 
-void Creature::Ondamaged(Protocol::ObjectInfo damageCasuer, int32 damageAmount)
+void Creature::OnDamaged(Protocol::ObjectInfo damageCauser, int32 damageAmount)
 {
 	int32 currentHp =  GetInfo().stat().hp();
 	int32 result = currentHp - damageAmount;
 	if (result <= 0)
 	{
-
-		printf("%s가 %s의 공격을 받아 사망했습니다.\n", GetInfo().name().c_str(), damageCasuer.name().c_str());
 		result = 0;
-		SetState(CreatureState::Dead);
+		OnDead(damageCauser);
 	}
 	SetHP(result);	
 	printf("%s가 %s의 공격을  받았습니다. 데미지 [%d], 남은 HP[%d]\n", 
-	GetInfo().name().c_str(), damageCasuer.name().c_str(), damageAmount, GetHP());
+	GetInfo().name().c_str(), damageCauser.name().c_str(), damageAmount, GetHP());
+}
+
+void Creature::OnDead(Protocol::ObjectInfo damageCauser)
+{
+	if (GetState() == CreatureState::Dead)
+		return;
+
+	printf("%s가 %s의 공격을 받아 사망했습니다.\n", GetInfo().name().c_str(), damageCauser.name().c_str());
+	SetState(CreatureState::Dead);
+
+	//플레이어들한테 죽음 통지
+	Protocol::S_Die pkt;
+	pkt.mutable_target()->CopyFrom(GetInfo());
+	pkt.mutable_damagecauser()->CopyFrom(damageCauser);
+	SendBufferRef sendBuffer = ServerPacketHandler::MakeSendBuffer(pkt, Protocol::S_DIE);
+	GetRoomRef()->BroadCast(sendBuffer);
+
+	//죽으면 어떻게 할까?
+	//GetRoomRef()->Remove(GetInfo());
+
+
 }
 
 void Creature::BindTarget(shared_ptr<Creature> target)
@@ -50,5 +69,8 @@ void Creature::UnBindTarget()
 	sInfo->CopyFrom(GetInfo());
 	SendBufferRef sendBuffer = ServerPacketHandler::MakeSendBuffer(pkt, S_MOVE);
 	GetRoomRef()->BroadCast(sendBuffer);
+
+	//
+
 }
 

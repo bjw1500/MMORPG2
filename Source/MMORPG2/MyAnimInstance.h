@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Animation/AnimInstance.h"
+#include "Network/Protocol.pb.h"
 #include "MyAnimInstance.generated.h"
 
 /**
@@ -25,12 +26,17 @@ public:
 		UFUNCTION()
 		void AnimNotify_AttackHit();
 
+		void SetState(Protocol::CreatureState state);
+
 private:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Move, Meta = (AllowPrivateAccess = True))
 	float IsRunning;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Move, Meta = (AllowPrivateAccess = True))
 	bool IsFalling;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Move, Meta = (AllowPrivateAccess = True))
+	bool IsDead = false;
 
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Move, Meta = (AllowPrivateAccess = True))

@@ -17,6 +17,7 @@
 #include "Components/TextBlock.h"
 #include "Components/EditableText.h"
 #include "Components/Button.h"
+#include "../MyAnimInstance.h"
 #include "../ChatWidget.h"
 
 void ClientPacketHandler::OnRecvPacket(ServerSessionRef session, BYTE* buffer, int32 len)
@@ -82,6 +83,10 @@ void ClientPacketHandler::HandlePacket(PacketMessage packet)
 			break;
 		case Protocol::S_CHAT:
 			Handle_S_Chat(packet);
+			break;
+		case Protocol::S_DIE:
+			Handle_S_Die(packet);
+			break;
 	default:
 		break;
 	}
@@ -147,6 +152,16 @@ void ClientPacketHandler::Handle_S_Despawn(PacketMessage packet)
 
 	}
 
+}
+
+void ClientPacketHandler::Handle_S_Die(PacketMessage packet)
+{
+	Protocol::S_Die pkt;
+	PacketHeader* header = (PacketHeader*)packet.pkt.GetData();
+	pkt.ParseFromArray(&header[1], header->size - sizeof(PacketHeader));
+
+	ACreature* creature = GameInstance->GetObjectManager()->GetPlayerByID(pkt.target().id());
+	creature->Anim->SetState(Protocol::CreatureState::Dead);
 }
 
 void ClientPacketHandler::Handle_S_Disconnect(PacketMessage packet)

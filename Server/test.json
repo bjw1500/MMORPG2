@@ -1,0 +1,7 @@
+{
+   "address" : "kor",
+   "age" : 12,
+   "family" : [ "mother", "father", "brother" ],
+   "gfriend" : true,
+   "name" : "KKK"
+}

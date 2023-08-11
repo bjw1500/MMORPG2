@@ -1,5 +1,7 @@
 D:\unreal\Server_Unreal\MMORPG2\Server\Account.cpp;D:\unreal\Server_Unreal\MMORPG2\Server\x64\Debug\Account.obj
 D:\unreal\Server_Unreal\MMORPG2\Server\Creature.cpp;D:\unreal\Server_Unreal\MMORPG2\Server\x64\Debug\Creature.obj
+D:\unreal\Server_Unreal\MMORPG2\Server\DataContents.cpp;D:\unreal\Server_Unreal\MMORPG2\Server\x64\Debug\DataContents.obj
+D:\unreal\Server_Unreal\MMORPG2\Server\DataManager.cpp;D:\unreal\Server_Unreal\MMORPG2\Server\x64\Debug\DataManager.obj
 D:\unreal\Server_Unreal\MMORPG2\Server\DBConnection.cpp;D:\unreal\Server_Unreal\MMORPG2\Server\x64\Debug\DBConnection.obj
 D:\unreal\Server_Unreal\MMORPG2\Server\DBConnectionPool.cpp;D:\unreal\Server_Unreal\MMORPG2\Server\x64\Debug\DBConnectionPool.obj
 D:\unreal\Server_Unreal\MMORPG2\Server\GameObject.cpp;D:\unreal\Server_Unreal\MMORPG2\Server\x64\Debug\GameObject.obj

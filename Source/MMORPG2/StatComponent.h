@@ -10,20 +10,6 @@
 
 DECLARE_MULTICAST_DELEGATE(FOnHpChanged);
 
-USTRUCT()
-struct FStatData : public FTableRowBase
-{
-	GENERATED_BODY()
-
-	UPROPERTY(EditAnyWhere, BlueprintReadWrite)
-	int32 Level;
-
-	UPROPERTY(EditAnyWhere, BlueprintReadWrite)
-	int32 Hp;
-		
-	UPROPERTY(EditAnyWhere, BlueprintReadWrite)
-	float Attack;
-};
 
 
 //StatComponent가 필요할까?

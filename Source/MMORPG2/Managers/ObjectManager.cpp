@@ -7,6 +7,9 @@
 #include "../Creature.h"
 #include "../MyPlayerController.h"
 #include "../Network/Protocol.pb.h"
+#include "../Network/GameManager.h"
+#include "DataManager.h"
+#include "../GameStruct.h"
 #include "../Monster.h"
 
 ObjectManager::ObjectManager()
@@ -141,12 +144,15 @@ void ObjectManager::CreateObject(Protocol::ObjectInfo info)
 			if (IsValid(newPlayer) == false)
 				return;
 			newPlayer->Setinfo(info);
+			newPlayer->ThisMasterOtherClient = true;
 			Players.Add(info.id(), newPlayer);
 		}
 			break;
 		case Protocol::MONSTER:
 		{
-			AMonster* newMonster = world->SpawnActor<AMonster>(SpawnMonster, SpawnLocation, SpawnRotation, SpawnParams);
+			FMonsterData* data =  GameInstance->GetDataManager()->GetMonsterData(info.templateid());
+
+			AMonster* newMonster = world->SpawnActor<AMonster>(data->Model, SpawnLocation, SpawnRotation, SpawnParams);
 			if (IsValid(newMonster) == false)
 				return;
 			newMonster->Setinfo(info);

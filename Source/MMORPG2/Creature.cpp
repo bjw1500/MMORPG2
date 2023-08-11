@@ -21,6 +21,7 @@
 #include "Managers/DataManager.h"
 #include "Engine/DamageEvents.h"
 #include "Components/WidgetComponent.h"
+#include "GameStruct.h"
 #include "HpBarWidget.h"
 
 ACreature::ACreature()
@@ -100,7 +101,6 @@ void ACreature::BeginPlay()
 	}
 
 	LoadStat(1);
-	PickUpItem();
 }
 
 void ACreature::PostInitializeComponents()
@@ -129,12 +129,15 @@ void ACreature::LoadStat(int id)
 	{
 
 		FStatData* stat = GameInstance->GetDataManager()->GetStat(1);
+		if (stat == nullptr)
+			return;
+
 		Protocol::Stat* infoStat = Info.mutable_stat();
 		infoStat->set_level(stat->Level);
-		infoStat->set_hp(stat->Hp);
-		infoStat->set_maxhp(stat->Hp);
+		infoStat->set_hp(stat->MaxHp);
+		infoStat->set_maxhp(stat->MaxHp);
 		infoStat->set_damage(stat->Attack);
-		UE_LOG(LogTemp, Log, TEXT("Level %d HP %d Attack %f"), stat->Level, stat->Hp, stat->Attack);
+		UE_LOG(LogTemp, Log, TEXT("Level %d HP %d Attack %f"), stat->Level, stat->MaxHp, stat->Attack);
 		UE_LOG(LogTemp, Log, TEXT("Info Level %d HP %d Attack %f"), infoStat->level(), infoStat->hp(), infoStat->damage());
 	}
 }
@@ -170,7 +173,7 @@ void ACreature::SetupPlayerInputComponent(class UInputComponent* PlayerInputComp
 		EnhancedInputComponent->BindAction(AttackAction, ETriggerEvent::Triggered, this, &ACreature::Attack);
 
 		//아이템 줍기
-		EnhancedInputComponent->BindAction(PickUpAction, ETriggerEvent::Triggered, this, &ACreature::PickUpItem);
+		EnhancedInputComponent->BindAction(PickUpAction, ETriggerEvent::Triggered, this, &ACreature::CreateItem);
 
 		//채팅
 				//아이템 줍기
@@ -263,7 +266,7 @@ void ACreature::ShowChat()
 void ACreature::UseSkill(Protocol::Skill_ID id)
 {
 	//다른 클라이언트가 조종하는 객체라면 패킷 보내기 X
-	if (ThisMasterOtherClient == true)
+	if (ThisMasterOtherClient == true || Info.type() == Protocol::MONSTER)
 		return;
 
 	//온라인 상태가 아니라면 패킷을 보내지 않는다.
@@ -327,35 +330,66 @@ float ACreature::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent,
 
 }
 
-void ACreature::ShowNearItem()
+void ACreature::FindNearItem(AMyItem* item)
 {
-	GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Yellow, TEXT("먹을 수 있는 아이템 발견"));
+	FString ItemText = FString::Printf(TEXT("%s 를 발견했습니다."), UTF8_TO_TCHAR(item->GetItemInfo().name().c_str()));
+	Utils::DebugLog(ItemText);
 
-	
+	if (CanPickUpItemList.Contains(item) == false)
+		CanPickUpItemList.Add(item);
+}
 
+void ACreature::LoseNearItem(AMyItem* item)
+{
+	FString ItemText = FString::Printf(TEXT("%s의 획득 범위에서 멀어졌습니다."), UTF8_TO_TCHAR(item->GetItemInfo().name().c_str()));
+	Utils::DebugLog(ItemText);
+
+	if (CanPickUpItemList.Contains(item)== true)
+		CanPickUpItemList.Remove(item);
 }
 
 void ACreature::PickUpItem()
 {
-	//주변에 아이템이 있는지 확인.
-
-	//그리고 아이템을 줍는다.
-
-	//이미 아이템이 있는 상황이면,
-	if (CurrentUseItem.IsValid() == true)
-	{
-		return;
-	}
-
+	//CanPickUpItemList의 목록에 있는 걸 획득한다.
+	AMyItem* item = CanPickUpItemList.Pop();
 
 	//임시 코드. 생성해서 먹는게 아니라, 나중에 아이템 주우면 장착하는 코드로 바꾸자.
-	CurrentUseItem = GetWorld()->SpawnActor<AMyItem>(FVector::ZeroVector, FRotator::ZeroRotator);
+	//CurrentUseItem = GetWorld()->SpawnActor<AMyItem>(FVector::ZeroVector, FRotator::ZeroRotator);
+
+	//if (CurrentUseItem.IsValid() == true)
+	//{
+	//	CurrentUseItem->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetNotIncludingScale, WeaponSocket);
+	//	CurrentUseItem->Master = this;
+	//	GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Yellow, TEXT("Pick Up Item"));
+	//}
+
+	if (IsValid(item) == false)
+		return;
+
+	CurrentUseItem = item;
+	CurrentUseItem->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetNotIncludingScale, WeaponSocket);
+	CurrentUseItem->Master = this;
+	GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Yellow, TEXT("Equipped Item"));
+
+}
+
+void ACreature::CreateItem()
+{
+
+	//임시 코드. 생성해서 먹는게 아니라, 나중에 아이템 주우면 장착하는 코드로 바꾸자.
+	FItemData* data = GameInstance->GetDataManager()->GetItemData(2);
+	if (data == nullptr)
+		return;
+
+	CurrentUseItem = GetWorld()->SpawnActor<AMyItem>(data->Model ,FVector::ZeroVector, FRotator::ZeroRotator);
 
 	if (CurrentUseItem.IsValid() == true)
 	{
 		CurrentUseItem->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetNotIncludingScale, WeaponSocket);
 		CurrentUseItem->Master = this;
-		GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Yellow, TEXT("Pick Up Item"));
+
+		FString text = FString::Printf(TEXT("%s 생성"), *data->Name);
+		GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Yellow, *text);
 	}
 }
 
