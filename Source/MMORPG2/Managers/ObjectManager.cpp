@@ -11,6 +11,7 @@
 #include "DataManager.h"
 #include "../GameStruct.h"
 #include "../Monster.h"
+#include "../MyItem.h"
 
 ObjectManager::ObjectManager()
 {
@@ -160,13 +161,21 @@ void ObjectManager::CreateObject(Protocol::ObjectInfo info)
 		}
 			break;
 		case Protocol::ITEM:
+		{
+			FItemData* data = GameInstance->GetDataManager()->GetItemData(info.templateid());
+			AMyItem* newItem = world->SpawnActor<AMyItem>(data->Model, SpawnLocation, SpawnRotation, SpawnParams);
+			if (IsValid(newItem) == false)
+				return;
+			newItem->SetItemInfo(data);
+			newItem->SetObjectInfo(info);
+			Items.Add(info.id(), newItem);
 			break;
+		}
 		case Protocol::UNKNOWN:
 			break;
 		default:
 			break;
 	}
-
 
 	FString string = FString::Printf(TEXT("ID[%d], Name[%s] 생성"), info.id(), UTF8_TO_TCHAR(info.name().c_str()));
 	GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Yellow, *string);
@@ -214,6 +223,25 @@ ACreature* ObjectManager::GetPlayerByID(int32 id)
 
 	return Players[id];
 }
+
+AMyItem* ObjectManager::GetItemByID(int32 id)
+{
+	bool check = Items.Contains(id);
+	if (check == false)
+		return nullptr;
+
+	return Items[id];
+}
+
+void ObjectManager::RemoveItemByID(int32 id)
+{
+	bool check = Items.Contains(id);
+	if (check == false)
+		return;
+	Items.Remove(id);
+
+}
+
 
 void ObjectManager::CheckDuplicatedID(Protocol::ObjectInfo* info)
 {

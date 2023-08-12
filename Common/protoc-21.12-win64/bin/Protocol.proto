@@ -44,6 +44,9 @@ enum Packet_ID
 	S_UPDATEMONSTER = 22;
 	C_DIE = 23;
 	S_DIE = 24;
+	S_DROPITEM = 25;
+	C_PICKUPITEM = 26;
+	S_PICKUPITEM = 27;
 }
 
 enum Skill_ID
@@ -207,6 +210,25 @@ message S_Die
 	ObjectInfo DamageCauser = 2;
 }
 
+message S_DropItem
+{
+	ItemInfo ItemInfo = 1;
+	int32 Count = 2;
+}
+
+message C_PickUpItem
+{
+	ObjectInfo Info = 1;
+	ObjectInfo PickItem = 2;
+}
+
+message S_PickUpItem
+{
+	ObjectInfo Info = 1;
+	ObjectInfo PickItem = 2;
+}
+
+
 message ObjectInfo
 {
 	int32 Id = 1;
@@ -221,7 +243,7 @@ message ObjectInfo
 
 message ItemInfo
 {
-	int32 Id = 1;
+	int32 DatabaseId = 1;
 	int32 templateId = 2;
 	string name = 3;
 	int32 damage = 4;

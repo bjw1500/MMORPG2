@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
 #include "Network/Protocol.pb.h"
+#include "GameStruct.h"
 #include "MyItem.generated.h"
 
 UCLASS()
@@ -45,7 +46,11 @@ public:
 	void LoadItemInfo(int32 id);
 
 	void SetItemInfo(Protocol::ItemInfo& info) { _itemInfo.CopyFrom(info); }
+	void SetItemInfo(FItemData* info);
 	Protocol::ItemInfo& GetItemInfo() { return _itemInfo; }
+
+	void SetObjectInfo(Protocol::ObjectInfo& info) { _Info.CopyFrom(info); }
+	Protocol::ObjectInfo& GetObjectInfo() { return _Info; }
 
 
 public:
@@ -54,5 +59,6 @@ public:
 
 private:
 	Protocol::ItemInfo _itemInfo;
+	Protocol::ObjectInfo _Info;
 
 };

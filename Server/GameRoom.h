@@ -13,6 +13,8 @@ public:
 	//플레이어 입장
 	void EnterPlayer(GameSessionRef session);
 	void EnterMonster();
+	void EnterItem(Protocol::ItemInfo itemInfo, Protocol::Position location);
+
 	void AddObject(GameObjectRef session, GameSessionRef ExceptSession = nullptr);
 
 public:
@@ -27,13 +29,14 @@ public:
 	void HandleSkill(Protocol::C_Skill skillPacket);
 	void HandleChangedHP(Protocol::C_ChangedHP changedPacket);
 	void HandleChat(Protocol::C_Chat chatPacket);
+	void HandlePickUpItem(Protocol::C_PickUpItem Pickpacket);
 
 	void Remove(Protocol::ObjectInfo info);
 	void BroadCast(SendBufferRef sendBuffer, GameSessionRef exceptSession = nullptr);
 
 
 	//Find
-	shared_ptr<Creature> FindObjectById(int32 id);
+	GameObjectRef FindObjectById(int32 id);
 
 public:
 
@@ -44,6 +47,7 @@ public:
 	map<int32, shared_ptr<Player>> _players;
 	map<int32, MonsterRef> _monsters;
 	map<int32, GameObjectRef> _objects;
+	map<int32, shared_ptr<class Item>> _items;
 
 
 };

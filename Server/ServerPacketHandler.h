@@ -12,7 +12,7 @@ public:
 	static SendBufferRef Make_S_TEST(uint64 id, uint32 hp, uint16 attack);
 	
 	static SendBufferRef Make_S_EnterRoom();
-	static SendBufferRef Make_S_SpawnMyPlayer(ObjectInfo info);
+	static SendBufferRef Make_S_SpawnMyPlayer(Protocol::ObjectInfo info);
 	static SendBufferRef Make_S_Disconnect(Protocol::ObjectInfo info);
 
 	static void Handle_C_EnterRoom(GameSessionRef session, BYTE* buffer, int32 len);
@@ -20,6 +20,7 @@ public:
 	static void Handle_C_Skill(GameSessionRef session, BYTE* buffer, int32 len);
 	static void Handle_C_ChangedHP(GameSessionRef session, BYTE* buffer, int32 len);
 	static void Handle_C_Chat(GameSessionRef session, BYTE* buffer, int32 len);
+	static void Handle_C_PickUpItem(GameSessionRef session, BYTE* buffer, int32 len);
 
 
 	//pre - game

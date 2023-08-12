@@ -1,5 +1,6 @@
 #pragma once
 #include "Creature.h"
+#include "DataContents.h"
 #include "GameObject.h"
 class Monster : public Creature
 {
@@ -15,6 +16,9 @@ public:
 	virtual void UpdateMove();
 	virtual void UpdateAttack();
 	virtual void UpdateDead();
+
+	virtual void OnDead(Protocol::ObjectInfo damageCauser) override;
+	FRewardData GetRandomReward();
 
 	virtual bool CanAttack();
 	virtual void UseSkill(Protocol::Skill_ID skillId);

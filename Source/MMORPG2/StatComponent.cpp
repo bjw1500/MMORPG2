@@ -71,6 +71,8 @@ void UStatComponent::SetHp(int32 value)
 	{
 
 		//캐릭터 사망.
+		if (GameInstance->bConnected == false)
+			Master->OnDead();
 
 	}
 	MasterInfo->mutable_stat()->set_hp(hp);

@@ -14,7 +14,7 @@ void SocketUtils::Init()
 	WSADATA wsaData;
 	assert(::WSAStartup(MAKEWORD(2, 2), OUT &wsaData) == 0);
 	
-	/* ·±Å¸ÀÓ¿¡ ÁÖ¼Ò ¾ò¾î¿À´Â API */
+	/* ï¿½ï¿½Å¸ï¿½Ó¿ï¿½ ï¿½Ö¼ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ API */
 	SOCKET dummySocket = CreateSocket();
 	assert(BindWindowsFunction(dummySocket, WSAID_CONNECTEX, reinterpret_cast<LPVOID*>(&ConnectEx)));
 	assert(BindWindowsFunction(dummySocket, WSAID_DISCONNECTEX, reinterpret_cast<LPVOID*>(&DisconnectEx)));
@@ -67,7 +67,7 @@ bool SocketUtils::SetTcpNoDelay(SOCKET socket, bool flag)
 	return SetSockOpt(socket, SOL_SOCKET, TCP_NODELAY, flag);
 }
 
-// ListenSocketÀÇ Æ¯¼ºÀ» ClientSocket¿¡ ±×´ë·Î Àû¿ë
+// ListenSocketï¿½ï¿½ Æ¯ï¿½ï¿½ï¿½ï¿½ ClientSocketï¿½ï¿½ ï¿½×´ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 bool SocketUtils::SetUpdateAcceptSocket(SOCKET socket, SOCKET listenSocket)
 {
 	return SetSockOpt(socket, SOL_SOCKET, SO_UPDATE_ACCEPT_CONTEXT, listenSocket);

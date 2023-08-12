@@ -173,7 +173,7 @@ void ACreature::SetupPlayerInputComponent(class UInputComponent* PlayerInputComp
 		EnhancedInputComponent->BindAction(AttackAction, ETriggerEvent::Triggered, this, &ACreature::Attack);
 
 		//아이템 줍기
-		EnhancedInputComponent->BindAction(PickUpAction, ETriggerEvent::Triggered, this, &ACreature::CreateItem);
+		EnhancedInputComponent->BindAction(PickUpAction, ETriggerEvent::Triggered, this, &ACreature::PickUpItem);
 
 		//채팅
 				//아이템 줍기
@@ -330,6 +330,10 @@ float ACreature::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent,
 
 }
 
+void ACreature::OnDead()
+{
+}
+
 void ACreature::FindNearItem(AMyItem* item)
 {
 	FString ItemText = FString::Printf(TEXT("%s 를 발견했습니다."), UTF8_TO_TCHAR(item->GetItemInfo().name().c_str()));
@@ -351,26 +355,31 @@ void ACreature::LoseNearItem(AMyItem* item)
 void ACreature::PickUpItem()
 {
 	//CanPickUpItemList의 목록에 있는 걸 획득한다.
+	if (CanPickUpItemList.Num() == 0)
+		return;
+
 	AMyItem* item = CanPickUpItemList.Pop();
-
-	//임시 코드. 생성해서 먹는게 아니라, 나중에 아이템 주우면 장착하는 코드로 바꾸자.
-	//CurrentUseItem = GetWorld()->SpawnActor<AMyItem>(FVector::ZeroVector, FRotator::ZeroRotator);
-
-	//if (CurrentUseItem.IsValid() == true)
-	//{
-	//	CurrentUseItem->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetNotIncludingScale, WeaponSocket);
-	//	CurrentUseItem->Master = this;
-	//	GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Yellow, TEXT("Pick Up Item"));
-	//}
-
 	if (IsValid(item) == false)
 		return;
 
+	//싱글 게임일 때는 그냥 아이템을 먹게 해준다.
+	if (GameInstance->bConnected == false)
+	{
+		EquippedItem(item);
+		return;
+	}
+
+	//온라인은 아이템을 주웠다는 패킷 보내 서버의 허락을 받아주자. 
+	//나중에는 DB 연동해서 계정의 인벤토리에 저장되게 만들어주자.
+	GameInstance->GetPacketHandler()->Make_C_PickUpItem(*GetInfo(), item->GetObjectInfo());
+}
+
+void ACreature::EquippedItem(AMyItem* item)
+{
 	CurrentUseItem = item;
 	CurrentUseItem->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetNotIncludingScale, WeaponSocket);
 	CurrentUseItem->Master = this;
 	GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Yellow, TEXT("Equipped Item"));
-
 }
 
 void ACreature::CreateItem()

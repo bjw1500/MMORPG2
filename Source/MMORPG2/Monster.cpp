@@ -5,6 +5,7 @@
 #include "Managers/ObjectManager.h"
 #include "Network/GameManager.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "Components/CapsuleComponent.h"
 #include "Kismet/KismetMathLibrary.h"
 #include "MyAnimInstance.h"
 
@@ -29,6 +30,12 @@ float AMonster::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, 
 {
 	Stat->OnDamaged(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
 	return DamageAmount;
+}
+
+void AMonster::OnDead()
+{
+	Anim->SetState(Protocol::CreatureState::Dead);
+	GetCapsuleComponent()->SetCollisionProfileName(TEXT("Item"));
 }
 
 void AMonster::RotationToTarget()

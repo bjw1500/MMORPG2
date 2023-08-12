@@ -87,6 +87,9 @@ void ClientPacketHandler::HandlePacket(PacketMessage packet)
 		case Protocol::S_DIE:
 			Handle_S_Die(packet);
 			break;
+		case Protocol::S_PICKUPITEM:
+			Handle_S_PickUpItem(packet);
+			break;
 	default:
 		break;
 	}
@@ -161,7 +164,7 @@ void ClientPacketHandler::Handle_S_Die(PacketMessage packet)
 	pkt.ParseFromArray(&header[1], header->size - sizeof(PacketHeader));
 
 	ACreature* creature = GameInstance->GetObjectManager()->GetPlayerByID(pkt.target().id());
-	creature->Anim->SetState(Protocol::CreatureState::Dead);
+	creature->OnDead();
 }
 
 void ClientPacketHandler::Handle_S_Disconnect(PacketMessage packet)
@@ -250,6 +253,26 @@ void ClientPacketHandler::Handle_S_Chat(PacketMessage packet)
 		return;
 	}
 	chat->UpdateChat(text);
+
+
+}
+
+void ClientPacketHandler::Handle_S_PickUpItem(PacketMessage packet)
+{
+	Protocol::S_PickUpItem pkt;
+	PacketHeader* header = (PacketHeader*)packet.pkt.GetData();
+	pkt.ParseFromArray(&header[1], header->size - sizeof(PacketHeader));
+
+	//누가 먹었는지 플레이어를 찾는다.
+	ACreature* player = GameInstance->GetObjectManager()->GetPlayerByID(pkt.info().id());
+	if (IsValid(player) == false)
+		Utils::DebugLog("Handle S PickUpItem Error");
+
+	AMyItem* pickedItem = GameInstance->GetObjectManager()->GetItemByID(pkt.pickitem().id());
+	if(IsValid(pickedItem) == false )
+		Utils::DebugLog("Handle S PickUpItem Error");
+
+	player->EquippedItem(pickedItem);
 
 
 }
@@ -443,6 +466,18 @@ void ClientPacketHandler::Make_C_Chat(FString msg)
 
 	SendBufferRef sendBuffer = MakeSendBuffer(pkt, Protocol::C_CHAT);
 	GameInstance->GetNetworkManager()->SendPacket(sendBuffer);
+}
+
+void ClientPacketHandler::Make_C_PickUpItem(Protocol::ObjectInfo info, Protocol::ObjectInfo PickItem)
+{
+	Protocol::C_PickUpItem pkt;
+	pkt.mutable_info()->CopyFrom(info);
+	pkt.mutable_pickitem()->CopyFrom(PickItem);
+
+
+	SendBufferRef sendBuffer = MakeSendBuffer(pkt, Protocol::C_PICKUPITEM);
+	GameInstance->GetNetworkManager()->SendPacket(sendBuffer);
+
 }
 
 void ClientPacketHandler::Make_C_TryLogin(FString id, FString password)

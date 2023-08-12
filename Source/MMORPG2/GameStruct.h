@@ -5,7 +5,6 @@
 #include "CoreMinimal.h"
 #include "Engine/DataTable.h"
 #include "Creature.h"
-#include "MyItem.h"
 #include "Network/Protocol.pb.h"
 #include "GameStruct.generated.h"
 
@@ -49,6 +48,9 @@ struct FRewardData : public FTableRowBase
 		int32 Id;
 
 	UPROPERTY(EditAnyWhere, BlueprintReadWrite)
+		FString ItemName;
+
+	UPROPERTY(EditAnyWhere, BlueprintReadWrite)
 		int32 Count;
 };
 
@@ -67,7 +69,7 @@ struct FMonsterData : public FTableRowBase
 		FStatData Stat;
 
 		UPROPERTY(EditAnyWhere, BlueprintReadWrite)
-		FRewardData Reward;
+		TArray<FRewardData> RewardDatas;
 
 		UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		TSubclassOf<ACreature> Model;
@@ -102,7 +104,7 @@ struct FItemData : public FTableRowBase
 		TEnumAsByte<EItemType> ItemType;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		TSubclassOf<AMyItem> Model;
+		TSubclassOf<class AMyItem> Model;
 };
 
 /*

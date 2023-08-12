@@ -8,6 +8,7 @@
 #include "Network/Protocol.pb.h"
 #include "Network/GameManager.h"
 #include "Managers/DataManager.h"
+#include "GameStruct.h"
 #include "Creature.h"
 
 // Sets default values
@@ -100,5 +101,30 @@ void AMyItem::LoadItemInfo(int32 id)
 	Protocol::ItemInfo info;
 	info.set_name("Blade");
 	SetItemInfo(info);
+}
+
+void AMyItem::SetItemInfo(FItemData* info)
+{
+	{
+		_itemInfo.set_templateid(info->Id);
+		_itemInfo.set_damage(info->Damage);
+		_itemInfo.set_name(std::string(TCHAR_TO_UTF8 (*info->Name)));
+		_itemInfo.set_armor(info->Armor);
+
+		switch (info->ItemType)
+		{
+		case WEAPON:
+			_itemInfo.set_itemtype(Protocol::WEAPON);
+			break;
+		case ARMOR:
+			_itemInfo.set_itemtype(Protocol::ARMOR);
+			break;
+		case COUNSUMABLE:
+			_itemInfo.set_itemtype(Protocol::CONSUMEABLE);
+			break;
+		default:
+			break;
+		}
+	}
 }
 
