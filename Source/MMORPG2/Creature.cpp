@@ -100,6 +100,8 @@ void ACreature::BeginPlay()
 		}
 	}
 
+	IsAttacking = false;
+	IsRolling = false;
 	LoadStat(1);
 }
 
@@ -111,6 +113,7 @@ void ACreature::PostInitializeComponents()
 	if (IsValid(Anim) == true)
 	{
 		Anim->OnMontageEnded.AddDynamic(this, &ACreature::OnAttackMontageEnd);
+		Anim->OnMontageEnded.AddDynamic(this, &ACreature::OnRollingMontageEnd);
 		Anim->OnAttackHit.AddUObject(this, &ACreature::AttackCheck);
 	}
 
@@ -142,12 +145,7 @@ void ACreature::LoadStat(int id)
 	}
 }
 
-void ACreature::OnAttackMontageEnd(UAnimMontage* Montage, bool bInterrupted)
-{
 
-	IsAttacking = true;
-
-}
 
 //////////////////////////////////////////////////////////////////////////
 // Input
@@ -160,7 +158,7 @@ void ACreature::SetupPlayerInputComponent(class UInputComponent* PlayerInputComp
 	if (UEnhancedInputComponent* EnhancedInputComponent = CastChecked<UEnhancedInputComponent>(PlayerInputComponent)) {
 
 		//Jumping
-		EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Triggered, this, &ACreature::Jump);
+		EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Triggered, this, &ACreature::Rolling);
 		EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Completed, this, &ACharacter::StopJumping);
 
 		//Moving
@@ -185,6 +183,9 @@ void ACreature::SetupPlayerInputComponent(class UInputComponent* PlayerInputComp
 
 void ACreature::Move(const FInputActionValue& Value)
 {
+
+	if (IsAttacking == true)
+		return;
 	// input is a Vector2D
 	FVector2D MovementVector = Value.Get<FVector2D>();
 
@@ -224,7 +225,7 @@ void ACreature::Attack()
 		
 		if (IsValid(Anim) == false)
 			return;
-		if (IsAttacking == false)
+		if (IsAttacking == true)
 			return;
 
 		Anim->PlayAttackMontage();
@@ -232,6 +233,30 @@ void ACreature::Attack()
 
 		//패킷 보내기
 		UseSkill(Protocol::ATTACK);
+}
+
+void ACreature::Rolling()
+{
+	if (IsValid(Anim) == false)
+		return;
+	if (IsRolling == true)
+		return;
+	Anim->PlayRollingMontage();
+	IsRolling = true;
+
+	UseSkill(Protocol::Skill_ID::JUMP);
+}
+
+void ACreature::OnAttackMontageEnd(UAnimMontage* Montage, bool bInterrupted)
+{
+
+	IsAttacking = false;
+
+}
+
+void ACreature::OnRollingMontageEnd(UAnimMontage* Montage, bool bInterrupted)
+{
+	IsRolling = false;
 }
 
 void ACreature::Jump()
@@ -435,7 +460,7 @@ void ACreature::UpdatePlayerSkill(int32 skillId)
 	switch (skillId)
 	{
 	case Protocol::JUMP:
-		Jump();
+		Rolling();
 		break;
 	case Protocol::ATTACK:
 		Attack();

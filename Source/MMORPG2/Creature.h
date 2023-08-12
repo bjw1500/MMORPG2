@@ -70,6 +70,7 @@ protected:
 	void Look(const FInputActionValue& Value);
 
 	void Attack();
+	void Rolling();
 
 	virtual void Jump() override;
 
@@ -107,9 +108,13 @@ public:
 	UFUNCTION()
 	void OnAttackMontageEnd(UAnimMontage* Montage, bool bInterrupted);
 
+	UFUNCTION()
+	void OnRollingMontageEnd(UAnimMontage* Montage, bool bInterrupted);
+
 private:
 
-	bool IsAttacking = true;
+	bool IsAttacking = false;
+	bool IsRolling = false;
 
 	//네트워크
 public:
@@ -139,7 +144,7 @@ public:
 protected:
 	
 	Protocol::ObjectInfo Info;
-	FName WeaponSocket = (TEXT("LeftHandWeaponSocket"));
+	FName WeaponSocket = (TEXT("WeaponSocket"));
 	TWeakObjectPtr<class AMyItem> CurrentUseItem;
 	TArray<class AMyItem*> CanPickUpItemList;
 };

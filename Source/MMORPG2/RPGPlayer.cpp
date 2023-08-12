@@ -2,9 +2,15 @@
 
 
 #include "RPGPlayer.h"
+#include "MyAnimInstance.h"
 #include "Creature.h"
 
 ARPGPlayer::ARPGPlayer() 
 {
 	//Init();
+}
+
+void ARPGPlayer::OnDead()
+{
+	Anim->SetState(Protocol::CreatureState::Dead);
 }
