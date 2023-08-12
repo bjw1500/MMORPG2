@@ -3,7 +3,11 @@
 #include "GameRoom.h"
 #include "Player.h"
 #include "ServerPacketHandler.h"
+#include "DataManager.h"
+#include "DataContents.h"
 #include <format>
+#include "Protocol.pb.h"
+#include <random>
 
 Monster::Monster() : Creature()
 {
@@ -103,6 +107,50 @@ void Monster::UpdateDead()
 {
 }
 
+void Monster::OnDead(Protocol::ObjectInfo damageCauser)
+{
+	Creature::OnDead(damageCauser);
+
+	//죽으면 아이템을 떨구게 한다.
+	FRewardData reward = GetRandomReward();
+	Protocol::ItemInfo rewardItem = GDataManager->GetItemData(reward.Id);
+
+	//떨군 아이템을 플레이어들한테 통지해준다.
+	GetRoomRef()->EnterItem(rewardItem, GetPos());
+
+
+
+	//Protocol::S_DropItem pkt;
+	//pkt.mutable_iteminfo()->CopyFrom(rewardItem);
+	//pkt.set_count(reward.Count);
+	//SendBufferRef sendBuffer = ServerPacketHandler::MakeSendBuffer(pkt, Protocol::S_DROPITEM);
+	//GetRoomRef()->BroadCast(sendBuffer);
+}
+
+FRewardData Monster::GetRandomReward()
+{
+	MonsterData data = GDataManager->GetMonsterData(_info.templateid());
+
+	// 시드값을 얻기 위한 random_device 생성.
+	std::random_device rd;
+	// random_device 를 통해 난수 생성 엔진을 초기화 한다.
+	std::mt19937 gen(rd());
+	// 0 부터 99 까지 균등하게 나타나는 난수열을 생성하기 위해 균등 분포 정의.
+	std::uniform_int_distribution<int> dis(0, 100);
+	int rand = dis(gen);
+	int sum = 0;
+	for (FRewardData reward : data.RewardDatas)
+	{
+		sum += reward.ItemDropRate;
+		if (rand <= sum)
+		{
+			return reward;
+			break;
+		}
+	}
+	return FRewardData();
+}
+
 
 
 bool Monster::CanAttack()
@@ -132,8 +180,6 @@ void Monster::UseSkill(Protocol::Skill_ID skillId)
 		_attackCoolTime = 0;
 
 	Protocol::S_Skill pkt;
-	//공격 패킷을 보낸다. 
-	//그런데 스킬 쿨타임은 어떻게?
 	Protocol::ObjectInfo* monster = pkt.mutable_info();
 	monster->CopyFrom(GetInfo());
 	pkt.set_skillid(skillId);
@@ -179,10 +225,10 @@ void Monster::MoveTo(shared_ptr<Creature> target)
 		currentPos.set_locationy(currentPos.locationy() - moveSpeed);
 	if (currentPos.locationy() < targetPos.locationy())
 		currentPos.set_locationy(currentPos.locationy() + moveSpeed);
-	if (currentPos.locationz() > targetPos.locationz())
-		currentPos.set_locationz(currentPos.locationz() - moveSpeed);
-	if (currentPos.locationz() < targetPos.locationz())
-		currentPos.set_locationz(currentPos.locationz() + moveSpeed);
+	//if (currentPos.locationz() > targetPos.locationz())
+	//	currentPos.set_locationz(currentPos.locationz() - moveSpeed);
+	//if (currentPos.locationz() < targetPos.locationz())
+	//	currentPos.set_locationz(currentPos.locationz() + moveSpeed);
 
 	currentPos.set_velocityx(1);
 	currentPos.set_velocityy(1);

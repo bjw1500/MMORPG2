@@ -8,6 +8,7 @@
 #include <format>
 #include "DataContents.h"
 #include "DataManager.h"
+#include "Item.h"
 #include "Account.h"
 
 atomic<int32> _objectId = 1;
@@ -117,7 +118,7 @@ void GameRoom::EnterMonster()
 	shared_ptr<Monster> newMonster = make_shared<Monster>();
 	MonsterData data = GDataManager->MonsterTable[1];
 
-	ObjectInfo newInfo;
+	Protocol::ObjectInfo newInfo;
 
 	newInfo.set_id(_objectId++);
 	newInfo.set_type(ObjectType::MONSTER);
@@ -128,7 +129,7 @@ void GameRoom::EnterMonster()
 
 	printf("ID [%d] , Name [%s] 몬스터 생성\n", newInfo.id(), newInfo.name().c_str());
 
-	Position* position = newInfo.mutable_position();
+	Protocol::Position* position = newInfo.mutable_position();
 	position->set_locationx(0);
 	position->set_locationy(0);
 	position->set_locationz(100);
@@ -141,12 +142,47 @@ void GameRoom::EnterMonster()
 	position->set_velocityy(0);
 	position->set_velocityz(0);
 
-	Stat* stat = newInfo.mutable_stat();
+	Protocol::Stat* stat = newInfo.mutable_stat();
 	stat->CopyFrom(data.Stat);
 
 	newMonster->SetInfo(newInfo);
 	AddObject(newMonster);
 }
+
+void GameRoom::EnterItem(Protocol::ItemInfo itemInfo, Protocol::Position location)
+{
+	lock_guard<mutex> gaurd(_lock);
+	shared_ptr<Item> newItem = make_shared<Item>();
+
+	Protocol::ObjectInfo newInfo;
+	newInfo.set_id(_objectId++);
+	newInfo.set_type(ObjectType::ITEM);
+	string name = itemInfo.name() + to_string(newInfo.id());
+	newInfo.set_name(name);
+	newInfo.set_state(CreatureState::Idle);
+	newInfo.set_templateid(itemInfo.templateid());
+
+	printf("ID [%d] , Name [%s] 아이템 생성\n", newInfo.id(), newInfo.name().c_str());
+
+
+	//위치 설정.
+	Protocol::Position* position = newInfo.mutable_position();
+	position->set_locationx(location.locationx());
+	position->set_locationy(location.locationy());
+	//position->set_locationz(location.locationz());
+	position->set_rotationx(0);
+	position->set_rotationy(0);
+	position->set_rotationz(0);
+	position->set_velocityx(0);
+	position->set_velocityy(0);
+	position->set_velocityz(0);
+
+	newItem->SetInfo(newInfo);
+	newItem->SetItemInfo(itemInfo);
+	AddObject(newItem);
+}
+
+
 
 void GameRoom::AddObject(GameObjectRef gameObject, GameSessionRef ExceptSession)
 {
@@ -160,6 +196,9 @@ void GameRoom::AddObject(GameObjectRef gameObject, GameSessionRef ExceptSession)
 		break;
 	case MONSTER:
 		_monsters[id] = static_pointer_cast<Monster>(gameObject);
+		break;
+	case ITEM:
+		_items[id] = static_pointer_cast<Item>(gameObject);
 		break;
 	case UNKNOWN:
 		_objects[id] = gameObject;
@@ -188,7 +227,7 @@ PlayerRef GameRoom::CreatePlayer(GameSessionRef session)
 {
 	shared_ptr<Player> newPlayer = make_shared<Player>();
 	
-	ObjectInfo newInfo;
+	Protocol::ObjectInfo newInfo;
 	newInfo.set_id(_objectId++);
 	newInfo.set_type(ObjectType::PLAYER);
 	string name = "Player_" + session->GetMyAccount()->_accountName;
@@ -196,7 +235,7 @@ PlayerRef GameRoom::CreatePlayer(GameSessionRef session)
 
 	printf("ID [%d] , Name [%s] 캐릭터 생성\n", newInfo.id(), newInfo.name().c_str());
 
-	Position* position = newInfo.mutable_position();
+	Protocol::Position* position = newInfo.mutable_position();
 	position->set_locationx(0);
 	position->set_locationy(0);
 	position->set_locationz(100);
@@ -208,7 +247,7 @@ PlayerRef GameRoom::CreatePlayer(GameSessionRef session)
 	position->set_velocityx(0);
 	position->set_velocityy(0);
 	position->set_velocityz(0);
-	Stat* stat = newInfo.mutable_stat();
+	Protocol::Stat* stat = newInfo.mutable_stat();
 	stat->set_hp(100);
 	stat->set_maxhp(100);
 	stat->set_damage(10);
@@ -272,10 +311,10 @@ void GameRoom::HandleSkill(Protocol::C_Skill skillPacket)
 
 void GameRoom::HandleChangedHP(Protocol::C_ChangedHP changedPacket)
 {
-	lock_guard<mutex> lock(_lock);
+	//lock_guard<mutex> lock(_lock);
 
-	shared_ptr<Creature> player = FindObjectById(changedPacket.target().id());
-	shared_ptr<Creature> damageCasuer = FindObjectById(changedPacket.damagecauser().id());
+	shared_ptr<Creature> player = static_pointer_cast<Creature>(FindObjectById(changedPacket.target().id()));
+	shared_ptr<Creature> damageCasuer = static_pointer_cast<Creature>(FindObjectById(changedPacket.damagecauser().id()));
 
 	if (player == nullptr)
 		return;
@@ -328,6 +367,31 @@ void GameRoom::HandleChat(Protocol::C_Chat chatPacket)
 	BroadCast(sendBuffer);
 }
 
+void GameRoom::HandlePickUpItem(Protocol::C_PickUpItem PickPacket)
+{
+	lock_guard<mutex> gaurd(_lock);
+
+	//서버 안에의 아이템 목록에서 지워준다.
+	if (_items.contains(PickPacket.pickitem().id()) == false)
+	{
+		cout << "잘못된 아이템 ID[" << PickPacket.pickitem().id() << " ] 입니다." << endl;
+		return;
+	}
+	_items.erase(PickPacket.pickitem().id());
+
+	//아이템을 장착했다면 다른 플레이어들에게 통지를 해줘야한다.
+	Protocol::S_PickUpItem pkt;
+	pkt.mutable_info()->CopyFrom(PickPacket.info());
+	pkt.mutable_pickitem()->CopyFrom(PickPacket.pickitem());
+	SendBufferRef sendBuffer = ServerPacketHandler::MakeSendBuffer(pkt, Protocol::S_PICKUPITEM);
+	BroadCast(sendBuffer);
+
+
+	//TODO
+	//데이터 베이스 연동해서 아이템 획득한 정보를 계정에 넣어주기.
+
+}
+
 void GameRoom::Remove(Protocol::ObjectInfo info)
 {
 	lock_guard<mutex> gaurd(_lock);
@@ -376,18 +440,23 @@ void GameRoom::BroadCast(SendBufferRef sendBuffer, GameSessionRef exceptSession)
 	}
 }
 
-shared_ptr<Creature> GameRoom::FindObjectById(int32 id)
+GameObjectRef GameRoom::FindObjectById(int32 id)
 {
 	if (_players.find(id) == _players.end())
 	{
 		if (_monsters.find(id) == _monsters.end())
 		{
-			printf("FindPlayerById Error! ID[%d] 없는 ID입니다.\n", id);
-			return nullptr;
+			if (_items.find(id) == _items.end())
+			{
+				printf("FindObjectById Error! ID[%d] 없는 ID입니다.\n", id);
+				return nullptr;
+			}
+			return _items[id];
 		}
 		return _monsters[id];
 	}
 
 	return _players[id];
 }
+
 

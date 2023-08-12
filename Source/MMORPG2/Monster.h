@@ -19,6 +19,7 @@ public:
 	virtual void Tick(float DeltaSeconds) override;
 
 	float TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser) override;
+	void OnDead() override;
 	void RotationToTarget();
 	void UpdateInfo(Protocol::ObjectInfo* info) override;
 

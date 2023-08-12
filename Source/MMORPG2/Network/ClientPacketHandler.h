@@ -28,6 +28,7 @@ public:
 	void Handle_S_Skill(PacketMessage packet);
 	void Handle_S_ChangedHP(PacketMessage packet);
 	void Handle_S_Chat(PacketMessage packet);
+	void Handle_S_PickUpItem(PacketMessage packet);
 
 	//Pre - Game
 	void Handle_S_Connect(PacketMessage packet);
@@ -41,6 +42,7 @@ public:
 	void Make_C_Move(Protocol::ObjectInfo info);
 	void Make_C_ChangedHP(Protocol::ObjectInfo target, Protocol::ObjectInfo damageCauser, int32 damageAmount);
 	void Make_C_Chat(FString msg);
+	void Make_C_PickUpItem(Protocol::ObjectInfo info, Protocol::ObjectInfo PickItem);
 	
 	//Pre - Game
 	void Make_C_TryLogin(FString id, FString password);

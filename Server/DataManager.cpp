@@ -86,11 +86,17 @@ void DataManager::LoadMonsterTable()
 		data.Stat.set_searchrange(stat["SearchRange"].asInt());
 		data.Stat.set_attackrange(stat["AttackRange"].asInt());
 
-		Json::Value reward = root[index]["Reward"];
+		Json::Value reward = root[index]["RewardDatas"];
 
-		data.Reward.ItemDropRate = reward["ItemDropRate"].asInt();
-		data.Reward.Id = reward["Id"].asInt();
-		data.Reward.Count = reward["Count"].asInt();
+		for (int rewardIndex = 0; rewardIndex < reward.size(); rewardIndex++)
+		{
+			FRewardData rewardData;
+
+			rewardData.ItemDropRate = reward[rewardIndex]["ItemDropRate"].asInt();
+			rewardData.Id = reward[rewardIndex]["Id"].asInt();
+			rewardData.Count = reward[rewardIndex]["Count"].asInt();
+			data.RewardDatas.push_back(rewardData);
+		}
 
 		MonsterTable[data.Id] = data;
 	}

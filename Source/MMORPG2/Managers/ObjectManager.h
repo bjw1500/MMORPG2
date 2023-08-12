@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "../Creature.h"
 #include "../Monster.h"
+#include "../MyItem.h"
 #include "../Network/Protocol.pb.h"
 
 /**
@@ -25,6 +26,8 @@ public:
 
 	ACreature* GetMyPlayer() { return MyPlayer; }
 	ACreature* GetPlayerByID(int32 id);
+	AMyItem* GetItemByID(int32 id);
+	void RemoveItemByID(int32 id);
 
 	void CheckDuplicatedID(Protocol::ObjectInfo* info);
 	
@@ -33,6 +36,7 @@ private:
 	ACreature* MyPlayer = nullptr;
 	TMap<int32, ACreature*> Players;
 	TMap<int32, ACreature*> Monsters;
+	TMap<int32, AMyItem*> Items;
 
 	TSubclassOf<ACreature> SpawnCharacter;
 	TSubclassOf<AMonster> SpawnMonster;

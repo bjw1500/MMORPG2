@@ -122,12 +122,13 @@ public:
 	void UseSkill(Protocol::Skill_ID id);
 	void AttackCheck();
 	virtual  float TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser) override;
-
+	virtual void OnDead();
 
 	void FindNearItem(class AMyItem* item);
 	void LoseNearItem(class AMyItem* item);
 
 	void PickUpItem();
+	void EquippedItem(AMyItem* item);
 	void CreateItem();
 
 	virtual void	UpdateInfo(Protocol::ObjectInfo* info);

@@ -77,6 +77,9 @@
     <ClCompile Include="DataContents.cpp">
       <Filter>소스 파일\Data</Filter>
     </ClCompile>
+    <ClCompile Include="Item.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h">
@@ -122,6 +125,7 @@
     <ClInclude Include="DataContents.h">
       <Filter>소스 파일\Data</Filter>
     </ClInclude>
+    <ClInclude Include="Item.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\Common\protoc-21.12-win64\bin\Protocol.proto">

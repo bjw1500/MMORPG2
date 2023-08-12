@@ -40,6 +40,9 @@ void ServerPacketHandler::HandlePacket(GameSessionRef session, BYTE* buffer, int
 	case Protocol::C_CHAT:
 		Handle_C_Chat(session, buffer, len);
 		break;
+	case Protocol::C_PICKUPITEM:
+		Handle_C_PickUpItem(session, buffer, len);
+		break;
 	default:
 		break;
 	}
@@ -72,7 +75,7 @@ SendBufferRef ServerPacketHandler::Make_S_EnterRoom()
 	return MakeSendBuffer(pkt, Protocol::S_ENTER_ROOM);
 }
 
-SendBufferRef ServerPacketHandler::Make_S_SpawnMyPlayer(ObjectInfo info)
+SendBufferRef ServerPacketHandler::Make_S_SpawnMyPlayer(Protocol::ObjectInfo info)
 {
 	S_SpawnMyPlayer pkt;
 	ObjectInfo* objectInfo = pkt.mutable_info();
@@ -199,6 +202,25 @@ void ServerPacketHandler::Handle_C_Chat(GameSessionRef session, BYTE* buffer, in
 	}
 
 	room->HandleChat(pkt);
+}
+
+void ServerPacketHandler::Handle_C_PickUpItem(GameSessionRef session, BYTE* buffer, int32 len)
+{
+	Protocol::C_PickUpItem pkt;
+	PacketHeader* header = (PacketHeader*)buffer;
+	pkt.ParseFromArray(&header[1], header->size - sizeof(PacketHeader));
+
+	PlayerRef player = session->GetMyPlayer();
+	if (player == nullptr)
+	{
+		return;
+	}
+	GameRoomRef room = player->GetRoomRef();
+	if (room == nullptr)
+	{
+		return;
+	}
+	room->HandlePickUpItem(pkt);
 }
 
 
