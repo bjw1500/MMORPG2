@@ -379,6 +379,7 @@ void ACreature::EquippedItem(AMyItem* item)
 	CurrentUseItem = item;
 	CurrentUseItem->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetNotIncludingScale, WeaponSocket);
 	CurrentUseItem->Master = this;
+	Anim->IsEquipped = true;
 	GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Yellow, TEXT("Equipped Item"));
 }
 
