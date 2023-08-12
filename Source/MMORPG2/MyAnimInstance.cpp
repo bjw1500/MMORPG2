@@ -46,15 +46,16 @@ void UMyAnimInstance::PlayAttackMontage()
 
 }
 
+void UMyAnimInstance::PlayRollingMontage()
+{
+	Montage_Play(RollingMontage, 1.0f);
+}
+
 void UMyAnimInstance::AnimNotify_AttackHit()
 {
 
-	Utils::DebugLog(TEXT("AnimNotiy Attack Hit"));
+	//Utils::DebugLog(TEXT("AnimNotiy Attack Hit"));
 	OnAttackHit.Broadcast();
-
-
-	//Attack Check 해주기.
-
 }
 
 void UMyAnimInstance::SetState(Protocol::CreatureState state)

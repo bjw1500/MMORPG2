@@ -16,4 +16,7 @@ class MMORPG2_API ARPGPlayer : public ACreature
 public:
 	ARPGPlayer();
 
+
+	void OnDead() override;
+
 };

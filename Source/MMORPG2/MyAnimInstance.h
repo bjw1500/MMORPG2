@@ -22,6 +22,7 @@ public:
 	UMyAnimInstance();
 		virtual void NativeUpdateAnimation (float DeltaSeconds) override;
 		void PlayAttackMontage();
+		void PlayRollingMontage();
 
 		UFUNCTION()
 		void AnimNotify_AttackHit();
@@ -37,6 +38,11 @@ private:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Move, Meta = (AllowPrivateAccess = True))
 	bool IsDead = false;
+
+public:
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Move, Meta = (AllowPrivateAccess = True))
+	bool IsRolling = false;
+
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Move, Meta = (AllowPrivateAccess = True))
 	bool IsEquipped = false;
@@ -44,6 +50,10 @@ public:
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Move, Meta = (AllowPrivateAccess = True))
 	UAnimMontage* AttackMontage;
+
+public:
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Move, Meta = (AllowPrivateAccess = True))
+	UAnimMontage* RollingMontage;
 
 public:
 	FOnAttackHit OnAttackHit;

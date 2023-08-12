@@ -9,6 +9,7 @@ public:
 	Player();
 	~Player();
 
+
 public:
 	GameSessionRef _session;
 };
