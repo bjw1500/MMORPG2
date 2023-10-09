@@ -28,17 +28,19 @@ protected:
 	
 public:
 	void SetInfo();
+	void BindPlayerUI();
 	void OnDamaged(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser);
 
 
-	Protocol::Stat GetStat() { return MasterInfo->stat(); }
-	float GetLevel() { return GetStat().level(); }
-	float GetMaxHp() { return  GetStat().maxhp(); }
-	float GetHp() { return  GetStat().hp(); }
+	Protocol::Stat* GetStat() { return MasterInfo->mutable_stat(); }
+	float GetLevel() { return GetStat()->level(); }
+	float GetMaxHp() { return  GetStat()->maxhp(); }
+	float GetHp() { return  GetStat()->hp(); }
 	void SetHp(int32 value);
 
-	float GetHpRatio() { return  GetStat().hp() / (float)GetStat().maxhp(); }
-	float GetDamage() { return  GetStat().damage(); }
+	float GetHpRatio() { return  GetStat()->hp() / (float)GetStat()->maxhp(); }
+	float GetDamage() { return  GetStat()->damage(); }
+	float GetSpeed() { return GetStat()->movespeed(); }
 
 	FOnHpChanged OnHpChanged;
 private:

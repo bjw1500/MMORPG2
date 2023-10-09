@@ -2,17 +2,51 @@
 	{
 		"Name": "1",
 		"Id": 1,
-		"Damage": 10,
+		"Damage": 20,
 		"Armor": 0,
+		"Price": 50,
 		"ItemType": "WEAPON",
-		"Model": "/Script/Engine.BlueprintGeneratedClass'/Game/Blueprints/Item/Weapon/BP_Blade.BP_Blade_C'"
+		"Model": "/Script/Engine.BlueprintGeneratedClass'/Game/Blueprints/Item/Weapon/BP_Blade.BP_Blade_C'",
+		"Icon": "/Script/Engine.Texture2D'/Game/Texture/Blade.Blade'"
 	},
 	{
 		"Name": "2",
 		"Id": 2,
 		"Damage": 10,
 		"Armor": 0,
+		"Price": 50,
 		"ItemType": "WEAPON",
-		"Model": "/Script/Engine.BlueprintGeneratedClass'/Game/Blueprints/Item/Weapon/BP_Axe.BP_Axe_C'"
+		"Model": "/Script/Engine.BlueprintGeneratedClass'/Game/Blueprints/Item/Weapon/BP_Axe.BP_Axe_C'",
+		"Icon": "/Script/Engine.Texture2D'/Game/Texture/Axe.Axe'"
+	},
+	{
+		"Name": "3",
+		"Id": 3,
+		"Damage": 25,
+		"Armor": 0,
+		"Price": 50,
+		"ItemType": "WEAPON",
+		"Model": "/Script/Engine.BlueprintGeneratedClass'/Game/Blueprints/Item/Weapon/BP_An_Axe.BP_An_Axe_C'",
+		"Icon": "/Script/Engine.Texture2D'/Game/Texture/AnAxe.AnAxe'"
+	},
+	{
+		"Name": "4",
+		"Id": 4,
+		"Damage": 40,
+		"Armor": 0,
+		"Price": 0,
+		"ItemType": "WEAPON",
+		"Model": "/Script/Engine.BlueprintGeneratedClass'/Game/Blueprints/Item/Weapon/BP_Wyrm_Blade.BP_Wyrm_Blade_C'",
+		"Icon": "/Script/Engine.Texture2D'/Game/Texture/wyrmblade.wyrmblade'"
+	},
+	{
+		"Name": "101",
+		"Id": 101,
+		"Damage": 0,
+		"Armor": 0,
+		"Price": 10,
+		"ItemType": "COUNSUMABLE",
+		"Model": "/Script/Engine.BlueprintGeneratedClass'/Game/Blueprints/Item/Consumable/BP_Potion.BP_Potion_C'",
+		"Icon": "/Script/Engine.Texture2D'/Game/Texture/potion.potion'"
 	}
 ]

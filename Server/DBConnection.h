@@ -1,10 +1,17 @@
 #pragma once
 #include <sql.h>
+#include "DataContents.h"
 #include <sqlext.h>
+#pragma warning(disable : 4996)
 
 /*----------------
 	DBConnection
 -----------------*/
+
+class PlayerDb;
+class ItemDb;
+class Account;
+class PlayerDb;
 
 enum
 {
@@ -15,17 +22,35 @@ enum
 class DBConnection
 {
 public:
-	bool			Connect(SQLHENV henv, const WCHAR* connectionString);
-	void			Clear();
+	bool	Connect(SQLHENV henv, const WCHAR* connectionString);
+	void	Clear();
 
-	bool			Execute(const WCHAR* query);
-	bool			Fetch();
-	int32			GetRowCount();
-	void			Unbind();
+	bool	Execute(const WCHAR* query);
+	bool	Fetch();
+	int32	GetRowCount();
+	void	Unbind();
 
-	bool			MakeAccount(string playerId, string password);
-	bool			CheckAccount(string playerId, string password);
-	bool			CheckAccount(string playerId);
+	bool	MakeAccount(string playerId, string password);
+	int32	CheckAccount(string playerId, string password);
+	bool	CheckAccount(string playerId);
+
+	void CreatePlayerDb(shared_ptr<Account> account, string name = "", int32 templatedId = 1);
+	void CreateItemDb(shared_ptr<PlayerDb> player, Protocol::ItemInfo* info);
+	void CreateQuestDb(shared_ptr<PlayerDb> player, FQuestData data);
+
+	void DeletePlayerDb(int32 accountId, int32 playerDbId);
+	void DeleteItemDb(int32 itemDbId);
+
+	vector<shared_ptr<PlayerDb>> LoadPlayerDb(shared_ptr<Account> account);
+	vector<shared_ptr<ItemDb>> LoadItemDb(shared_ptr<PlayerDb> player);
+	map<int32, FQuestData> LoadQuestDb(shared_ptr<PlayerDb> player);
+
+	void SavePlayerInfo(shared_ptr<Player> player);
+	void SaveItemInfo(Protocol::ItemInfo* info);
+	void SaveQuestInfo(FQuestData data, shared_ptr<Player> player);
+
+	string w2s(const std::wstring& var);
+	wstring s2w(const std::string& var);
 
 public:
 	bool			BindParam(int32 paramIndex, bool* value, SQLLEN* index);

@@ -3,9 +3,9 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "../Network/Buffer.h"
-#include "../Network/Protocol.pb.h"
-#include "../Network/NetworkSession.h"
+#include "Network/Buffer.h"
+#include "Network/Protocol.pb.h"
+#include "Network/NetworkSession.h"
 
 /**
  * 

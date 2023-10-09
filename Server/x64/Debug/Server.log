@@ -1,8 +1,1 @@
-﻿  GameRoom.cpp
-  GameSession.cpp
-  Monster.cpp
-D:\unreal\Server_Unreal\MMORPG2\Server\Monster.cpp(144,16): warning C4244: '+=': 'float'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-  Player.cpp
-  ServerPacketHandler.cpp
-  코드를 생성하고 있습니다...
-  Server.vcxproj -> D:\unreal\Server_Unreal\MMORPG2\Server\Binaries\x64\Server.exe
+﻿  Server.vcxproj -> D:\unreal\Server_Unreal\MMORPG2\Server\Binaries\x64\Server.exe

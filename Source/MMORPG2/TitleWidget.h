@@ -39,6 +39,9 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Server")
 		bool TryCreateAccount();
 
+	UFUNCTION(BlueprintCallable, Category = "Server")
+		bool GoToConnectState();
+
 
 
 public:

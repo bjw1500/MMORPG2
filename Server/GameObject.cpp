@@ -1,5 +1,6 @@
 #include "pch.h"
 #include "GameObject.h"
+#include "GameRoom.h"
 
 
 GameObject::GameObject()
@@ -14,6 +15,17 @@ GameObject::~GameObject()
 
 void GameObject::Update(float deltaTime)
 {
+}
+
+void GameObject::UpdateInfo()
+{
+	if (GetRoomRef() == nullptr)
+		return;
+
+	Protocol::S_UpdateInfo pkt;
+	pkt.mutable_info()->CopyFrom(GetInfo());
+	SendBufferRef sendBuffer = ServerPacketHandler::MakeSendBuffer(pkt, Protocol::S_UPDATE_INFO);
+	GetRoomRef()->BroadCast(sendBuffer);
 }
 
 float GameObject::GetDistanceFromTarget(Protocol::Position pos)

@@ -8,6 +8,8 @@
 #include <format>
 #include "Protocol.pb.h"
 #include <random>
+#include "DBConnection.h"
+#include "DBConnectionPool.h"
 
 Monster::Monster() : Creature()
 {
@@ -19,10 +21,14 @@ Monster::~Monster()
 
 void Monster::Update(float deltaTime)
 {
+	Creature::Update(deltaTime);
+
+	if(_attackCoolTime <=10)
+		_attackCoolTime += deltaTime;
+	if (GetState() == Casting)
+		_castingTime += deltaTime;
+
 	UpdateController();
-
-
-
 }
 
 void Monster::UpdateController()
@@ -35,11 +41,14 @@ void Monster::UpdateController()
 	case Move:
 		UpdateMove();
 		break;
-	case Attack:
+	case CreatureState::Attack:
 		UpdateAttack();
 		break;
 	case Dead:
 		UpdateDead();
+		break;
+	case Casting:
+		UpdateCasting();
 		break;
 	default:
 		break;
@@ -51,6 +60,7 @@ void Monster::UpdateController()
 void Monster::UpdateIdle()
 {
 	//대기 상태일 때는 타겟을 찾는다.
+
 	bool ret = SearchTarget();
 	if (ret == true)
 		SetState(CreatureState::Move);
@@ -94,8 +104,7 @@ void Monster::UpdateAttack()
 {	
 	if (CanAttack() == true)
 	{
-		
-		UseSkill(Protocol::Skill_ID::ATTACK);
+		Attack(Protocol::Skill_ID::ATTACK);
 	}else 
 	{
 		//만약 상대방이 공격 거리에서 벗어났다면, 
@@ -107,9 +116,31 @@ void Monster::UpdateDead()
 {
 }
 
-void Monster::OnDead(Protocol::ObjectInfo damageCauser)
+void Monster::UpdateCasting()
 {
-	Creature::OnDead(damageCauser);
+	if (_castingTime > 5.0f)
+	{
+		_castingTime = 0;
+		SetState(Idle);
+
+	}
+
+}
+
+bool Monster::OnDead(Protocol::ObjectInfo damageCauser)
+{
+	bool ret = Creature::OnDead(damageCauser);
+	if (ret == false)
+		return false;
+
+	//죽인 플레이어한테 경험치를 넣어준다.
+	shared_ptr<Player> player = static_pointer_cast<Player>(GetRoomRef()->FindObjectById(damageCauser.id()));
+
+	std::random_device rd;
+	std::mt19937 gen(rd());
+	std::uniform_int_distribution<int> dis(0, 99);
+	player->GetInven()->AddGold(dis(gen));
+	player->RefreshInven();
 
 	//죽으면 아이템을 떨구게 한다.
 	FRewardData reward = GetRandomReward();
@@ -118,19 +149,14 @@ void Monster::OnDead(Protocol::ObjectInfo damageCauser)
 	//떨군 아이템을 플레이어들한테 통지해준다.
 	GetRoomRef()->EnterItem(rewardItem, GetPos());
 
+	//만약 죽은 몬스터가 플레이어의 퀘스트 목표였다면?
+	player->CheckQuestTarget(GetTemplatedId());
 
-
-	//Protocol::S_DropItem pkt;
-	//pkt.mutable_iteminfo()->CopyFrom(rewardItem);
-	//pkt.set_count(reward.Count);
-	//SendBufferRef sendBuffer = ServerPacketHandler::MakeSendBuffer(pkt, Protocol::S_DROPITEM);
-	//GetRoomRef()->BroadCast(sendBuffer);
+	return true;
 }
 
 FRewardData Monster::GetRandomReward()
 {
-	MonsterData data = GDataManager->GetMonsterData(_info.templateid());
-
 	// 시드값을 얻기 위한 random_device 생성.
 	std::random_device rd;
 	// random_device 를 통해 난수 생성 엔진을 초기화 한다.
@@ -139,7 +165,7 @@ FRewardData Monster::GetRandomReward()
 	std::uniform_int_distribution<int> dis(0, 100);
 	int rand = dis(gen);
 	int sum = 0;
-	for (FRewardData reward : data.RewardDatas)
+	for (FRewardData reward : _data.RewardDatas)
 	{
 		sum += reward.ItemDropRate;
 		if (rand <= sum)
@@ -155,7 +181,7 @@ FRewardData Monster::GetRandomReward()
 
 bool Monster::CanAttack()
 {
-	if (_target->GetState() == CreatureState::Dead)
+	if (_target == nullptr ||_target->GetState() == CreatureState::Dead)
 	{
 		UnBindTarget();
 		SetState(CreatureState::Idle);
@@ -171,9 +197,9 @@ bool Monster::CanAttack()
 	return false;
 }
 
-void Monster::UseSkill(Protocol::Skill_ID skillId)
+void Monster::Attack(Protocol::Skill_ID skillId)
 {
-	_attackCoolTime += GetRoomRef()->_deltaTime;
+
 	if (_attackCoolTime < 1)
 		return;
 	else
@@ -181,6 +207,7 @@ void Monster::UseSkill(Protocol::Skill_ID skillId)
 
 	Protocol::S_Skill pkt;
 	Protocol::ObjectInfo* monster = pkt.mutable_info();
+	pkt.set_attackindex(0);
 	monster->CopyFrom(GetInfo());
 	pkt.set_skillid(skillId);
 	SendBufferRef sendBuffer = ServerPacketHandler::MakeSendBuffer(pkt, Protocol::S_SKILL);
@@ -189,6 +216,11 @@ void Monster::UseSkill(Protocol::Skill_ID skillId)
 
 	//string text = std::format("{}가 {}를 {}공격력으로 공격합니다.", GetInfo().name(), _target->GetInfo().name(), _target->GetInfo().stat().damage());
 	//cout << text << endl;
+}
+
+bool Monster::UseSkill1(Protocol::Skill_ID skillId)
+{
+	return true;
 }
 
 bool Monster::SearchTarget()
@@ -217,21 +249,31 @@ void Monster::MoveTo(shared_ptr<Creature> target)
 	Protocol::Position targetPos = target->GetPos();
 	float moveSpeed = GetInfo().stat().movespeed() * GetRoomRef()->_deltaTime;
 
-	if(currentPos.locationx()> targetPos.locationx())
+	//왼쪽
+	if (currentPos.locationx() > targetPos.locationx())
+	{
 		currentPos.set_locationx(currentPos.locationx() - moveSpeed);
+	}
+	//오른쪽
 	if (currentPos.locationx() < targetPos.locationx())
+	{
 		currentPos.set_locationx(currentPos.locationx() + moveSpeed);
+	}
+	
+	//뒤
 	if (currentPos.locationy() > targetPos.locationy())
+	{
 		currentPos.set_locationy(currentPos.locationy() - moveSpeed);
-	if (currentPos.locationy() < targetPos.locationy())
-		currentPos.set_locationy(currentPos.locationy() + moveSpeed);
-	//if (currentPos.locationz() > targetPos.locationz())
-	//	currentPos.set_locationz(currentPos.locationz() - moveSpeed);
-	//if (currentPos.locationz() < targetPos.locationz())
-	//	currentPos.set_locationz(currentPos.locationz() + moveSpeed);
+	}
 
-	currentPos.set_velocityx(1);
-	currentPos.set_velocityy(1);
+	//앞
+	if (currentPos.locationy() < targetPos.locationy())
+	{
+		currentPos.set_locationy(currentPos.locationy() + moveSpeed);
+	}
+
+	currentPos.set_velocityx(100);
+	currentPos.set_velocityy(100);
 	currentPos.set_velocityz(1);
 
 	SetPos(currentPos);

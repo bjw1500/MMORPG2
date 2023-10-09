@@ -28,11 +28,9 @@ int main()
 	ASSERT_CRASH(GDBConnectionPool->Connect(1, L"Driver={SQL Server Native Client 11.0};Server=(localdb)\\MSSQLLocalDB;Database=Unreal_Server;Trusted_Connection=Yes;"));
 
 	GDataManager = new DataManager();
-	//GDataManager->MakeJsonTest();
 
 
 	SocketUtils::Init();
-
 	ServerServiceRef service = make_shared<ServerService>(
 		NetAddress(L"127.0.0.1", 7777),
 		make_shared<IocpCore>(),
@@ -53,7 +51,19 @@ int main()
 			});
 	}
 
-	GRoom->EnterMonster();
+	GRoom->EnterMonster(-2200.0, -3000, 50);
+	GRoom->EnterMonster(-2400.0, -3000, 50);
+	Protocol::ItemInfo rewardItem = GDataManager->GetItemData(101);
+	Protocol::Position position;
+	position.set_locationx(-3300.0);
+	position.set_locationy(700.0);
+	position.set_locationz(0);
+	GRoom->EnterItem(rewardItem, position);
+	rewardItem = GDataManager->GetItemData(1);
+	position.set_locationx(-3150);
+	GRoom->EnterItem(rewardItem, position);
+
+
 
 	//게임 Update
 	while (true)

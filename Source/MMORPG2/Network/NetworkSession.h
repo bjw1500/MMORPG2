@@ -34,7 +34,6 @@ public:
 	virtual ~Session();
 
 public:
-	/* �ܺο��� ���?*/
 	void				Send(SendBufferRef sendBuffer);
 	bool				Connect();
 	void				Disconnect(const WCHAR* cause);
@@ -43,7 +42,6 @@ public:
 	void				SetService(TSharedPtr<Service> service) { _service = service; }
 
 public:
-	/* ���� ���� */
 	void				SetNetAddress(NetAddress address) { _netAddress = address; }
 	NetAddress			GetAddress() { return _netAddress; }
 	SOCKET				GetSocket() { return _socket; }
@@ -51,12 +49,10 @@ public:
 	TSharedPtr<Session>			GetSessionRef() { return SharedThis(this); }
 
 private:
-	/* �������̽� ���� */
 	virtual HANDLE		GetHandle() override;
 	virtual void		Dispatch(struct IocpEvent* iocpEvent, int32 numOfBytes = 0) override;
 
 private:
-	/* ���� ���� */
 	bool				RegisterConnect();
 	bool				RegisterDisconnect();
 	void				RegisterRecv();
@@ -70,7 +66,6 @@ private:
 	void				HandleError(int32 errorCode);
 
 protected:
-	/* ������ �ڵ忡�� ������ */
 	virtual void		OnConnected() { }
 	virtual int32		OnRecv(BYTE* buffer, int32 len) { return len; }
 	virtual void		OnSend(int32 len) { }
@@ -85,15 +80,11 @@ private:
 private:
 	USE_LOCK;
 
-	/* ���� ���� */
 	RecvBuffer				_recvBuffer;
-
-	/* �۽� ���� */
 	queue<SendBufferRef>	_sendQueue;
 	atomic<bool>			_sendRegistered = false;
 
 private:
-	/* IocpEvent ���� */
 	IocpEvent		_connectEvent{ EventType::Connect };
 	IocpEvent		_disconnectEvent{ EventType::Disconnect };
 	IocpEvent		_recvEvent{ EventType::Recv };
@@ -107,7 +98,7 @@ private:
 struct PacketHeader
 {
 	uint16 size;
-	uint16 id; // ��������ID (ex. 1=�α���, 2=�̵���û)
+	uint16 id; 
 };
 
 class PacketSession : public Session

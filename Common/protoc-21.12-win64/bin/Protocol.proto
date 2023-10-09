@@ -16,6 +16,12 @@ enum ItemType
 	CONSUMEABLE = 2;
 }
 
+enum SkillType
+{
+	ACTIVE = 0;
+	PASSIVE = 1;
+}
+
 
 enum Packet_ID
 {
@@ -47,14 +53,38 @@ enum Packet_ID
 	S_DROPITEM = 25;
 	C_PICKUPITEM = 26;
 	S_PICKUPITEM = 27;
+	C_MONSTER_MOVE = 28;
+	S_UPDATE_INFO =29;
+	C_ADD_TO_INVENTORY =30;
+	S_ADD_TO_INVENTORY = 31;
+	C_EQUIPPED_ITEM = 32;
+	S_EQUIPPED_ITEM = 33;
+	C_LOADING_CHARACTERLIST = 34;
+	S_LOADING_CHARACTERLIST = 35;
+	C_CREATE_CHARACTER = 36;
+	S_CREATE_CHARACTER = 37;
+	C_DELETE_CHARACTER = 38;
+	S_REFRESH_INVENTORY = 39;
+	C_USE_ITEM = 40;
+	S_USE_ITEM = 41;
+	C_BUY_ITEM = 42;
+	S_BUY_ITEM = 43;
+	C_SPAWN_BOSS = 44;
+	C_GET_QUEST = 45;
+	S_GET_QUEST = 46;
+	C_QUEST_UPDATE = 47;
+	S_QUEST_UPDATE = 48;
 }
 
 enum Skill_ID
 {
-	JUMP = 0;
-	ATTACK = 1;
-	ROLL = 2;
 
+	DASH = 0;
+	SKILL_1 = 1;
+	SKILL_2 = 2;
+	SKILL_3 = 3;
+	ATTACK = 4;
+	JUMP = 5;
 }
 
 enum CreatureState
@@ -63,6 +93,7 @@ enum CreatureState
 	Move = 1;
 	Attack = 2;
 	Dead = 3;
+	Casting = 4;
 }
 
 message S_Test
@@ -124,12 +155,14 @@ message C_Skill
 {
 	ObjectInfo info = 1;
 	int32 skillId = 2;
+	int32 AttackIndex = 3;
 }
 
 message S_Skill
 {
 	ObjectInfo info = 1;
 	int32 skillId = 2;
+	int32 AttackIndex = 3;
 }
 
 message C_ChangedHP
@@ -226,8 +259,124 @@ message S_PickUpItem
 {
 	ObjectInfo Info = 1;
 	ObjectInfo PickItem = 2;
+	ItemInfo ItemInfo = 3;
 }
 
+message C_MonsterMove
+{
+	ObjectInfo info = 1;
+}
+
+message S_UpdateInfo
+{
+	ObjectInfo info = 1;
+}
+
+message C_AddToInventory
+{
+	ObjectInfo PlayerInfo = 1;
+	ObjectInfo ItemInfo = 2;
+}
+
+message S_AddToInventory
+{
+	ObjectInfo PlayerInfo = 1;
+	repeated ItemInfo Items = 2;
+}
+
+message C_EquippedItem
+{
+	ObjectInfo PlayerInfo = 1;
+	ItemInfo ItemInfo = 2;
+}
+
+message S_EquippedItem
+{
+	ObjectInfo PlayerInfo = 1;
+	ItemInfo ItemInfo = 2;
+}
+
+message C_LoadingCharacterList
+{
+
+}
+
+message S_LoadingCharacterList
+{
+	repeated CharacterListElement CharacterList = 1;
+}
+
+message C_CreateCharacter
+{
+	int32 TemplatedId = 1;
+	string Name = 2;
+}
+
+message S_CreateCharacter
+{
+
+}
+
+message C_DeleteCharacter
+{
+	int32 Slot = 1;
+}
+
+message S_RefreshInventory
+{
+	ObjectInfo PlayerInfo = 1;
+	repeated ItemInfo Items = 2;
+	int32 Gold = 3;
+}
+
+message C_UseItem
+{
+	ObjectInfo PlayerInfo = 1;
+	ItemInfo ItemInfo = 2;
+}
+
+message S_UseItem
+{
+	ObjectInfo PlayerInfo = 1;
+	ItemInfo ItemInfo = 2;
+}
+
+message C_BuyItem
+{
+	int32 ItemTemplatedId = 2;
+}
+
+message S_BuyItem
+{
+	int32 Result = 1;
+}
+
+message C_Spanw_Boss
+{
+
+}
+
+message C_GetQuest
+{
+	int32 QuestTemplatedId = 1;
+}
+
+message S_GetQuest
+{
+	int32 QuestTemplatedId = 1;
+	int32 CurrentProgress = 2;
+}
+
+message C_UpdateQuest
+{
+
+}
+
+message S_UpdateQuest
+{
+	int32 QuestTemplatedId = 1;
+	int32 CurrentProgress = 2;
+}
 
 message ObjectInfo
 {
@@ -252,22 +401,28 @@ message ItemInfo
 	int32 count = 7;
 	int32 slot =8;
 	int32 IsEquipped = 9;
+	int32 Price = 10;
 }
 
 
 message Position
 {
-	double LocationX = 1;
-	double LocationY = 2;
-	double LocationZ = 3;
+	float LocationX = 1;
+	float LocationY = 2;
+	float LocationZ = 3;
 
-	double RotationX = 4;
-	double RotationY = 5;
-	double RotationZ = 6;
+	float RotationX = 4;
+	float RotationY = 5;
+	float RotationZ = 6;
 
-	double VelocityX = 7;
-	double VelocityY = 8;
-	double VelocityZ = 9;
+	float VelocityX = 7;
+	float VelocityY = 8;
+	float VelocityZ = 9;
+
+	float Horizontal = 10;
+	float Vertical = 11;
+
+	int32 IsRunning = 12;
 
 }
 
@@ -281,5 +436,13 @@ message Stat
 	float SearchRange = 6;
 	float MoveSpeed = 7;
 	int32 TotalExp = 8;
+	repeated string Skills = 9;
 }
 
+message CharacterListElement
+{
+	ObjectInfo PlayerInfo = 1;
+	ItemInfo EquippedItem = 2;
+	int32 Slot = 3;
+
+}

@@ -23,7 +23,7 @@ bool UTitleWidget::TryConnectToServer()
 
 	FString test = FString::Printf(TEXT("%s"), ip.c_str());
 
-	GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Yellow, *test);
+	//GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Yellow, *test);
 	//만약 실패하면?
 	return connect;
 }
@@ -52,4 +52,17 @@ bool UTitleWidget::TryCreateAccount()
 
 	GameInstance->GetPacketHandler()->Make_C_CreateAccount(id, password);
 	return true;
+}
+
+bool UTitleWidget::GoToConnectState()
+{
+	CurrentState = TitleState::Login;
+
+	CreateID_EditableText->SetVisibility(ESlateVisibility::Hidden);
+	CreatePassword_EditableText->SetVisibility(ESlateVisibility::Hidden);
+	
+	ID_EditableText->SetVisibility(ESlateVisibility::Visible);
+	Password_EditableText->SetVisibility(ESlateVisibility::Visible);
+
+	return false;
 }

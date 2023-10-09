@@ -15,10 +15,16 @@ class MMORPG2_API AMMORPG2GameModeBase : public AGameModeBase
 {
 	GENERATED_BODY()
 public:
+		AMMORPG2GameModeBase();
 		virtual void BeginPlay() override;
+		virtual void Init();
+
 
 public:
+
+	UPROPERTY()
+	TSubclassOf<UUserWidget> UIClass;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "UI");
-	class UUserWidget* Main_UI;
+	class UUserWidget* MainUI;
 	
 };

@@ -1,6 +1,6 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 #include "MyPlayerController.h"
-#include "Creature.h"
+#include "Object/Creature.h"
 #include "Network/Protocol.pb.h"
 #include "Network/NetworkSession.h"
 #include "Network/Buffer.h"
@@ -21,6 +21,7 @@ AMyPlayerController::AMyPlayerController()
 
 void AMyPlayerController::BeginPlay()
 {
+	Super::BeginPlay();
 	//GameInstance->GetNetworkManager()->Init();
 }
 
@@ -38,6 +39,19 @@ void AMyPlayerController::Tick(float DeltaSeconds)
 	if (bCanControll == false)
 		return;
 	SendPlayerInfo();
+
+}
+
+void AMyPlayerController::OnPossess(APawn* aPawn)
+{
+	Super::OnPossess(aPawn);
+
+	ACreature* player = Cast<ACreature>(UGameplayStatics::GetPlayerCharacter(this, 0));
+	if (IsValid(player) == false)
+		return;
+
+	player->Stat->BindPlayerUI();
+
 
 }
 

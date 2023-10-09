@@ -5,14 +5,15 @@
 #include "SocketUtils.h"
 #include "Service.h"
 #include "NetworkSession.h"
-#include "../Managers//Manager.h"
-#include "../Managers/ObjectManager.h"
-#include "../Managers/NetworkManager.h"
-#include "../Managers/DataManager.h"
+#include "Managers/ObjectManager.h"
+#include "Managers/NetworkManager.h"
+#include "Managers/DataTableManager.h"
 #include "ClientPacketHandler.h"
 #include "Protocol.pb.h"
 #include "Kismet/GameplayStatics.h"
 #include "Blueprint/WidgetLayoutLibrary.h"
+#include "Managers/UIManager.h"
+#include "Managers/InventoryManager.h"
 
 UGameManager* GameInstance = nullptr;
 
@@ -38,22 +39,19 @@ void UGameManager::Init()
 
 void UGameManager::LoadGameLevel(FString name)
 {
-	
-
 	Utils::DebugLog(name);
 	UWidgetLayoutLibrary::RemoveAllWidgets(GetWorld());
 	UGameplayStatics::OpenLevel(GetWorld(), *name, true);
-
 }
 
 
 
 
-ObjectManager* UGameManager::GetObjectManager()
+UObjectManager* UGameManager::GetObjectManager()
 {
-	if (_objectManager.IsValid() == false)
+	if (_objectManager.Get() == nullptr)
 	{
-		_objectManager = MakeShared<ObjectManager>();
+		_objectManager = NewObject<UObjectManager>();
 		_objectManager->Init();
 	}
 
@@ -76,6 +74,7 @@ ClientPacketHandler* UGameManager::GetPacketHandler()
 	if (_netWorkManager.IsValid() == false)
 	{
 		_packetHandler = MakeShared<ClientPacketHandler>();
+		_packetHandler->Init();
 	}
 
 
@@ -93,23 +92,40 @@ PacketQueue* UGameManager::GetPacketQueue()
 	return _packetQueue.Get();
 }
 
-DataManager* UGameManager::GetDataManager()
+UDataTableManager* UGameManager::GetDataManager()
 {
-	if (_dataManager.IsValid() == false)
+	if (_dataManager == false)
 	{
 
-		_dataManager = MakeShared<DataManager>();
+		_dataManager = NewObject<UDataTableManager>();
 		_dataManager->Init();
 
 	}
 	return _dataManager.Get();
 }
 
+UUIManager* UGameManager::GetUIManager()
+{
+	if (UIManger.Get() == nullptr)
+		UIManger = NewObject<UUIManager>();
+
+
+	return UIManger.Get();
+}
+
+UInventoryManager* UGameManager::GetInventory()
+{
+	if (InventoryManager.Get() == nullptr)
+		InventoryManager = NewObject<UInventoryManager>();
+
+	return InventoryManager.Get();
+}
+
 void Utils::DebugLog(FString string)
 {
 	if (GEngine)
 	{
-		GEngine->AddOnScreenDebugMessage(-1, 10.0f, FColor::Yellow, *string);
-		UE_LOG(LogTemp, Warning, TEXT("%s"), *string);
+		//GEngine->AddOnScreenDebugMessage(-1, 10.0f, FColor::Yellow, *string);
+		//UE_LOG(LogTemp, Warning, TEXT("%s"), *string);
 	}
 }

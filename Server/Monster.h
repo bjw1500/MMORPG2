@@ -16,16 +16,25 @@ public:
 	virtual void UpdateMove();
 	virtual void UpdateAttack();
 	virtual void UpdateDead();
+	virtual void UpdateCasting();
 
-	virtual void OnDead(Protocol::ObjectInfo damageCauser) override;
+	virtual bool OnDead(Protocol::ObjectInfo damageCauser) override;
 	FRewardData GetRandomReward();
 
 	virtual bool CanAttack();
-	virtual void UseSkill(Protocol::Skill_ID skillId);
+	virtual void Attack(Protocol::Skill_ID skillId);
+	virtual bool UseSkill1(Protocol::Skill_ID skillId);
 	virtual bool SearchTarget();
 	virtual void MoveTo(shared_ptr<Creature> target);
 
-private:
+public:
+	MonsterData _data;
+protected:
+
 	float _attackCoolTime = 0.0f;
+	float _skillCoolTime1 = 0.0f;
+	float _skillCoolTime2 = 0.0f;
+	float _castingTime = 0.0f;
+
 };
 

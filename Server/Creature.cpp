@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "Creature.h"
 #include "GameRoom.h"
+#include "DataManager.h"
 Creature::Creature()
 {
 
@@ -24,10 +25,10 @@ void Creature::OnDamaged(Protocol::ObjectInfo damageCauser, int32 damageAmount)
 	GetInfo().name().c_str(), damageCauser.name().c_str(), damageAmount, GetHP());
 }
 
-void Creature::OnDead(Protocol::ObjectInfo damageCauser)
+bool Creature::OnDead(Protocol::ObjectInfo damageCauser)
 {
 	if (GetState() == CreatureState::Dead)
-		return;
+		return false;
 
 	printf("%s가 %s의 공격을 받아 사망했습니다.\n", GetInfo().name().c_str(), damageCauser.name().c_str());
 	SetState(CreatureState::Dead);
@@ -40,9 +41,46 @@ void Creature::OnDead(Protocol::ObjectInfo damageCauser)
 	GetRoomRef()->BroadCast(sendBuffer);
 
 	//죽으면 어떻게 할까?
-	//GetRoomRef()->Remove(GetInfo());
+	GetRoomRef()->Remove(GetInfo());
+	return true;
+}
 
+void Creature::Update(float deltaTime)
+{
+	GameObject::Update(deltaTime);
+	UpdateSkillCoolTime(deltaTime);
 
+}
+
+void Creature::UpdateSkillCoolTime(float deltaTime)
+{
+	if (_skills.size() == 0)
+		return;
+
+	for (auto& skill : _skills)
+	{
+		//스킬 사용이 가능할 때는 무시,
+		if (skill.second.CanUse == true)
+			continue;
+		skill.second.SkillCoolTime += deltaTime;
+
+		if (skill.second.SkillCoolTime > skill.second.CoolTime)
+		{
+			skill.second.SkillCoolTime = 0;
+			skill.second.CanUse = true;
+		}
+	}
+}
+
+bool Creature::UseSkill(int32 id)
+{
+
+	if (_skills[id].CanUse == false)
+		return false;
+
+	_skills[id].CanUse = false;
+	_skills[id].SkillCoolTime = 0;
+	return true;
 }
 
 void Creature::BindTarget(shared_ptr<Creature> target)
@@ -63,14 +101,28 @@ void Creature::UnBindTarget()
 	currentPos.set_velocityy(0);
 	currentPos.set_velocityz(0);
 	SetPos(currentPos);
+	SetState(Idle);
 
-	Protocol::S_Move pkt;
-	Protocol::ObjectInfo* sInfo = pkt.mutable_info();
-	sInfo->CopyFrom(GetInfo());
-	SendBufferRef sendBuffer = ServerPacketHandler::MakeSendBuffer(pkt, S_MOVE);
-	GetRoomRef()->BroadCast(sendBuffer);
+	//Protocol::S_Move pkt;
+	//Protocol::ObjectInfo* sInfo = pkt.mutable_info();
+	//sInfo->CopyFrom(GetInfo());
+	//SendBufferRef sendBuffer = ServerPacketHandler::MakeSendBuffer(pkt, S_MOVE);
+	//GetRoomRef()->BroadCast(sendBuffer);
+}
 
-	//
+int32 Creature::GetAttackIndex()
+{
+	int32 ReturnIndex = _attackIndex;
+	_attackIndex = (_attackIndex + 1) % 4;
+	return ReturnIndex;
+}
 
+void Creature::SetSkillData(Protocol::Stat* stat)
+{
+	for (auto skill : stat->skills())
+	{
+		FSkillData data = GDataManager->GetSkillData(skill);
+		_skills[data.SkillType_ID] = data;
+	}
 }
 
