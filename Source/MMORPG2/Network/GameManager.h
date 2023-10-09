@@ -8,12 +8,14 @@
 #include "../MyPlayerController.h"
 #include "GameManager.generated.h"
 
-class ObjectManager;
+class UObjectManager;
 class NetworkManager;
 class UManager;
 class ClientPacketHandler;
 class PacketQueue;
-class DataManager;
+class UDataTableManager;
+class UUIManager;
+class UInventoryManager;
 
 UCLASS()
 class MMORPG2_API UGameManager : public UGameInstance
@@ -29,21 +31,30 @@ public:
 
 
 public:
-	ObjectManager* GetObjectManager();
+	UObjectManager* GetObjectManager();
 	NetworkManager* GetNetworkManager();
 	ClientPacketHandler* GetPacketHandler();
 	PacketQueue* GetPacketQueue();
-	DataManager* GetDataManager();
+	UDataTableManager* GetDataManager();
+	UUIManager* GetUIManager();
+	UInventoryManager* GetInventory();
 	AMyPlayerController* GetPlayerController() {
 		return Cast<AMyPlayerController>(GetFirstLocalPlayerController());
 	}
 
 private:
-	TSharedPtr<ObjectManager> _objectManager;
+
 	TSharedPtr<NetworkManager> _netWorkManager;
 	TSharedPtr<ClientPacketHandler> _packetHandler;
 	TSharedPtr<PacketQueue> _packetQueue;
-	TSharedPtr<DataManager> _dataManager;
+	UPROPERTY()
+	TObjectPtr<UObjectManager> _objectManager;
+	UPROPERTY()
+	TObjectPtr<UDataTableManager> _dataManager;
+	UPROPERTY()
+	TObjectPtr<UUIManager> UIManger;
+	UPROPERTY()
+	TObjectPtr<UInventoryManager> InventoryManager;
 
 	AMyPlayerController* MyPlayerController = nullptr;
 
@@ -61,12 +72,10 @@ public:
 //#define GameInstance  Cast<UGameManager>(GetGameInstance());
 
 extern UGameManager* GameInstance;
-
 class Utils
 {
 public:
 	static void DebugLog(FString string);
-
 
 
 

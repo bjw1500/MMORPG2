@@ -1,0 +1,58 @@
+[
+	{
+		"Name": "1",
+		"Id": 1,
+		"CharacterName": "Shinbi",
+		"Stat":
+		{
+			"Level": 1,
+			"MaxHp": 500,
+			"TotalExp": 0,
+			"Attack": 0,
+			"Speed": 1000,
+			"SearchRange": 0,
+			"AttackRange": 0,
+			"Skills": [
+				"Dash",
+				"FlashAttack",
+				"TripleBash",
+				"PhantomSlash"
+			]
+		},
+		"Model": "/Script/Engine.BlueprintGeneratedClass'/Game/Blueprints/Player/BP_Shinbi.BP_Shinbi_C'"
+	},
+	{
+		"Name": "2",
+		"Id": 2,
+		"CharacterName": "Serath",
+		"Stat":
+		{
+			"Level": 1,
+			"MaxHp": 100,
+			"TotalExp": 0,
+			"Attack": 0,
+			"Speed": 1000,
+			"SearchRange": 0,
+			"AttackRange": 0,
+			"Skills": []
+		},
+		"Model": "/Script/Engine.BlueprintGeneratedClass'/Game/Blueprints/Player/BP_Serath.BP_Serath_C'"
+	},
+	{
+		"Name": "3",
+		"Id": 3,
+		"CharacterName": "GrayStone",
+		"Stat":
+		{
+			"Level": 1,
+			"MaxHp": 100,
+			"TotalExp": 0,
+			"Attack": 0,
+			"Speed": 1000,
+			"SearchRange": 0,
+			"AttackRange": 0,
+			"Skills": []
+		},
+		"Model": "/Script/Engine.BlueprintGeneratedClass'/Game/Blueprints/Player/BP_GrayStone.BP_GrayStone_C'"
+	}
+]

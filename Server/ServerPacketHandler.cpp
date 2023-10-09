@@ -43,6 +43,33 @@ void ServerPacketHandler::HandlePacket(GameSessionRef session, BYTE* buffer, int
 	case Protocol::C_PICKUPITEM:
 		Handle_C_PickUpItem(session, buffer, len);
 		break;
+	case Protocol::C_MONSTER_MOVE:
+		Handle_C_MonsterMoveByClient(session, buffer, len);
+		break;
+	case Protocol::C_EQUIPPED_ITEM:
+		Handle_C_EquippedItem(session, buffer, len);
+		break;
+	case Protocol::C_LOADING_CHARACTERLIST:
+		Handle_C_LoadingCharacterList(session, buffer, len);
+		break;
+	case Protocol::C_CREATE_CHARACTER:
+		Handle_C_CreateCharacter(session, buffer, len);
+		break;
+	case Protocol::C_DELETE_CHARACTER:
+		Handle_C_DeleteCharacter(session, buffer, len);
+		break;
+	case Protocol::C_USE_ITEM:
+		Handle_C_UseItem(session, buffer, len);
+		break;
+	case Protocol::C_BUY_ITEM:
+		Handle_C_BuyItem(session, buffer, len);
+		break;
+	case Protocol::C_SPAWN_BOSS:
+		Handle_C_SpawnBoss(session, buffer, len);
+		break;
+	case Protocol::C_GET_QUEST:
+		Handle_C_GetQuest(session, buffer, len);
+		break;
 	default:
 		break;
 	}
@@ -93,7 +120,7 @@ SendBufferRef ServerPacketHandler::Make_S_Disconnect(Protocol::ObjectInfo info)
 	return MakeSendBuffer(pkt, S_DISCONNECT);
 }
 
-void ServerPacketHandler::Handle_C_EnterRoom(GameSessionRef session, BYTE* buffer, int32 len)
+void ServerPacketHandler::Handle_C_EnterRoom(GameSessionRef& session, BYTE* buffer, int32 len)
 {
 	Protocol::C_EnterRoom pkt;
 	PacketHeader* header = (PacketHeader*)buffer;
@@ -102,10 +129,10 @@ void ServerPacketHandler::Handle_C_EnterRoom(GameSessionRef session, BYTE* buffe
 	//TODO
 	//나중에 플레이어가 요청한 캐릭터 ID를 생성하게 하자
 	//하지만 지금은 그냥 기본 캐릭터로 입장만 시켜주자.
-	GRoom->EnterPlayer(session);
+	GRoom->EnterPlayer(session, pkt.characterid());
 }
 
-void ServerPacketHandler::Handle_C_Move(GameSessionRef session, BYTE* buffer, int32 len)
+void ServerPacketHandler::Handle_C_Move(GameSessionRef& session, BYTE* buffer, int32 len)
 {
 	Protocol::C_Move pkt;
 	PacketHeader* header = (PacketHeader*)buffer;
@@ -128,7 +155,7 @@ void ServerPacketHandler::Handle_C_Move(GameSessionRef session, BYTE* buffer, in
 	room->HandleMove(pkt);
 }
 
-void ServerPacketHandler::Handle_C_Skill(GameSessionRef session, BYTE* buffer, int32 len)
+void ServerPacketHandler::Handle_C_Skill(GameSessionRef& session, BYTE* buffer, int32 len)
 {
 	//플레이어가 스킬을 사용했다.
 	//데미지 판정은 일단 클라이언트에게 맡기고, 사용했다는 패킷만 전부 뿌리게 하자.
@@ -153,7 +180,7 @@ void ServerPacketHandler::Handle_C_Skill(GameSessionRef session, BYTE* buffer, i
 	room->HandleSkill(pkt);
 }
 
-void ServerPacketHandler::Handle_C_ChangedHP(GameSessionRef session, BYTE* buffer, int32 len)
+void ServerPacketHandler::Handle_C_ChangedHP(GameSessionRef& session, BYTE* buffer, int32 len)
 {
 	//플레이어가 스킬을 사용했다.
 //데미지 판정은 일단 클라이언트에게 맡기고, 사용했다는 패킷만 전부 뿌리게 하자.
@@ -176,14 +203,9 @@ void ServerPacketHandler::Handle_C_ChangedHP(GameSessionRef session, BYTE* buffe
 	}
 
 	room->HandleChangedHP(pkt);
-
-
-
-
-
 }
 
-void ServerPacketHandler::Handle_C_Chat(GameSessionRef session, BYTE* buffer, int32 len)
+void ServerPacketHandler::Handle_C_Chat(GameSessionRef& session, BYTE* buffer, int32 len)
 {
 	Protocol::C_Chat pkt;
 	PacketHeader* header = (PacketHeader*)buffer;
@@ -204,7 +226,7 @@ void ServerPacketHandler::Handle_C_Chat(GameSessionRef session, BYTE* buffer, in
 	room->HandleChat(pkt);
 }
 
-void ServerPacketHandler::Handle_C_PickUpItem(GameSessionRef session, BYTE* buffer, int32 len)
+void ServerPacketHandler::Handle_C_PickUpItem(GameSessionRef& session, BYTE* buffer, int32 len)
 {
 	Protocol::C_PickUpItem pkt;
 	PacketHeader* header = (PacketHeader*)buffer;
@@ -223,6 +245,128 @@ void ServerPacketHandler::Handle_C_PickUpItem(GameSessionRef session, BYTE* buff
 	room->HandlePickUpItem(pkt);
 }
 
+void ServerPacketHandler::Handle_C_MonsterMoveByClient(GameSessionRef& session, BYTE* buffer, int32 len)
+{
+	Protocol::C_MonsterMove pkt;
+	PacketHeader* header = (PacketHeader*)buffer;
+	pkt.ParseFromArray(&header[1], header->size - sizeof(PacketHeader));
+
+	PlayerRef player = session->GetMyPlayer();
+	if (player == nullptr)
+	{
+		return;
+	}
+	GameRoomRef room = player->GetRoomRef();
+	if (room == nullptr)
+	{
+		return;
+	}
+	room->HandleMonsterMoveByClient(pkt);
+
+}
+
+void ServerPacketHandler::Handle_C_EquippedItem(GameSessionRef& session, BYTE* buffer, int32 len)
+{
+	Protocol::C_EquippedItem pkt;
+	PacketHeader* header = (PacketHeader*)buffer;
+	pkt.ParseFromArray(&header[1], header->size - sizeof(PacketHeader));
+
+	PlayerRef player = session->GetMyPlayer();
+	if (player == nullptr)
+	{
+		return;
+	}
+	GameRoomRef room = player->GetRoomRef();
+	if (room == nullptr)
+	{
+		return;
+	}
+	room->HandleEquippedItem(pkt);
+}
+
+void ServerPacketHandler::Handle_C_UseItem(GameSessionRef& session, BYTE* buffer, int32 len)
+{
+	Protocol::C_UseItem pkt;
+	PacketHeader* header = (PacketHeader*)buffer;
+	pkt.ParseFromArray(&header[1], header->size - sizeof(PacketHeader));
+
+	PlayerRef player = session->GetMyPlayer();
+	if (player == nullptr)
+	{
+		return;
+	}
+	GameRoomRef room = player->GetRoomRef();
+	if (room == nullptr)
+	{
+		return;
+	}
+	room->HandleUseItem(pkt);
+
+}
+
+void ServerPacketHandler::Handle_C_BuyItem(GameSessionRef& session, BYTE* buffer, int32 len)
+{
+	Protocol::C_BuyItem pkt;
+	PacketHeader* header = (PacketHeader*)buffer;
+	pkt.ParseFromArray(&header[1], header->size - sizeof(PacketHeader));
+
+	PlayerRef player = session->GetMyPlayer();
+	if (player == nullptr)
+	{
+		return;
+	}
+	GameRoomRef room = player->GetRoomRef();
+	if (room == nullptr)
+	{
+		return;
+	}
+
+	player->BuyItem(pkt.itemtemplatedid());
+
+}
+
+void ServerPacketHandler::Handle_C_SpawnBoss(GameSessionRef& session, BYTE* buffer, int32 len)
+{
+	Protocol::C_Spanw_Boss pkt;
+	PacketHeader* header = (PacketHeader*)buffer;
+	pkt.ParseFromArray(&header[1], header->size - sizeof(PacketHeader));
+
+	PlayerRef player = session->GetMyPlayer();
+	if (player == nullptr)
+	{
+		return;
+	}
+	GameRoomRef room = player->GetRoomRef();
+	if (room == nullptr)
+	{
+		return;
+	}
+
+	room->EnterBoss();
+}
+
+void ServerPacketHandler::Handle_C_GetQuest(GameSessionRef& session, BYTE* buffer, int32 len)
+{
+	Protocol::C_GetQuest pkt;
+	PacketHeader* header = (PacketHeader*)buffer;
+	pkt.ParseFromArray(&header[1], header->size - sizeof(PacketHeader));
+
+	PlayerRef player = session->GetMyPlayer();
+	if (player == nullptr)
+	{
+		return;
+	}
+	GameRoomRef room = player->GetRoomRef();
+	if (room == nullptr)
+	{
+		return;
+	}
+
+	//플레이어의 캐릭터 DB에 퀘스트 정보를 넣어준다.
+	int32 questId = pkt.questtemplatedid();
+	player->AcceptQuest(questId);
+}
+
 
 
 //Pre - Game 
@@ -235,14 +379,11 @@ void ServerPacketHandler::Handle_C_TryLogin(GameSessionRef session, BYTE* buffer
 	cout << "ID[" << pkt.id() <<"]" << " 가 로그인을 시도합니다. 비밀번호" << pkt.password() << endl;
 
 
-	//TODO
-	//나중에 DB 연결해주기
 	DBConnection* db = GDBConnectionPool->Pop();
-	//db->MakeAccount(pkt.id(), pkt.password());
 
 	//아이디와 비밀번화 확인 결과가 거짓이라면, 그냥 리턴.
-	bool ret = db->CheckAccount(pkt.id(), pkt.password());
-	if (ret == false)
+	int32 DbId = db->CheckAccount(pkt.id(), pkt.password());
+	if (DbId == false)
 	{
 		Protocol::S_FailedLogin pkt3;
 		pkt3.set_info("잘못된 계정입니다. 다시 입력해주세요.");
@@ -250,22 +391,24 @@ void ServerPacketHandler::Handle_C_TryLogin(GameSessionRef session, BYTE* buffer
 		GDBConnectionPool->Push(db);
 		return;
 	}
-	GDBConnectionPool->Push(db);
+
 	
 	//세션에 플레이어의 계정 정보를 남겨두자.
-	//게임 안에서 플레이어 닉넴으로 사용.
-	session->SetMyAccount(make_shared<Account>(pkt.id()));
+	session->SetMyAccount(make_shared<Account>(pkt.id(), DbId));
+	shared_ptr<Account> account = session->GetMyAccount();
 
+	//계정 정보를 성공적으로 불러왔으면 계정 안의 플레이어 정보를 채워주자.
+	//다만 지금은 계정 안에 만들어진 캐릭터가 없으면 자동으로 하나 추가된다.
+	account->_players = db->LoadPlayerDb(account);
+	GDBConnectionPool->Push(db);
 
 	//인증 절차, 이후 통과했으면 Success Login 패킷 보내주기
-	
-	
+	//패킷에는 계정이 가지고 있던 플레이어의 정보를 넘긴다.
+	//이후 클라이언트에서는 담긴 정보에 따라 캐릭터창에서 캐릭터를 생성한다.
 	Protocol::S_SuccessLogin pkt2;
-	//string info = std::format("{1}", "안녕");
 	std::string str = std::format("{}님 환영합니다.", pkt.id());
 	pkt2.set_info(str);
 	session->Send(MakeSendBuffer(pkt2, Protocol::S_SUCCESSLOGIN));
-
 
 }
 
@@ -277,12 +420,8 @@ void ServerPacketHandler::Handle_C_CreateAccount(GameSessionRef session, BYTE* b
 
 	cout << "ID[" << pkt.id() << "]" << " 가 새로운 계정을 만듭니다. 비밀번호" << pkt.password() << endl;
 
-
-	//TODO
-	//나중에 DB 연결해주기
 	DBConnection* db = GDBConnectionPool->Pop();
 	bool ret = db->MakeAccount(pkt.id(), pkt.password());
-
 
 	Protocol::S_CreateAccount pkt2;
 	pkt2.set_id(pkt.id());
@@ -298,9 +437,84 @@ void ServerPacketHandler::Handle_C_CreateAccount(GameSessionRef session, BYTE* b
 		pkt2.set_result(true);
 		string msg = pkt.id() + " 가 성공적으로 만들어졌습니다.";
 		pkt2.set_msg(msg);
-		session->SetMyAccount(make_shared<Account>(pkt.id()));
+
+		//만들어진 계정 DB ID 가져오기
+		int32 accountDbId = db->CheckAccount(pkt.id(), pkt.password());
+		session->SetMyAccount(make_shared<Account>(pkt.id(), accountDbId));
 	}
 
 	session->Send(MakeSendBuffer(pkt2, Protocol::S_CREATEACCOUNT));
 	GDBConnectionPool->Push(db);
+}
+
+void ServerPacketHandler::Handle_C_LoadingCharacterList(GameSessionRef session, BYTE* buffer, int32 len)
+{
+	Protocol::C_LoadingCharacterList pkt;
+	PacketHeader* header = (PacketHeader*)buffer;
+	pkt.ParseFromArray(&header[1], header->size - sizeof(PacketHeader));
+
+	Protocol::S_LoadingCharacterList pkt2;
+	for (auto player : session->GetMyAccount()->_players)
+	{
+		Protocol::CharacterListElement* element = pkt2.add_characterlist();
+		element->mutable_playerinfo()->CopyFrom(player->GetPlayerInfo());
+		element->mutable_equippeditem()->CopyFrom(player->GetCurrentUseWeapon());
+		element->set_slot(player->PlayerSlot);
+	}
+
+	session->Send(MakeSendBuffer(pkt2, Protocol::S_LOADING_CHARACTERLIST));
+}
+
+void ServerPacketHandler::Handle_C_CreateCharacter(GameSessionRef session, BYTE* buffer, int32 len)
+{
+	Protocol::C_CreateCharacter pkt;
+	PacketHeader* header = (PacketHeader*)buffer;
+	pkt.ParseFromArray(&header[1], header->size - sizeof(PacketHeader));
+
+	//데이터 베이스의 Player에 새로운 캐릭터를 추가해준다.
+	cout << pkt.name() << " Handle C Create" << endl;
+	DBConnection* db = GDBConnectionPool->Pop();
+	db->CreatePlayerDb(session->GetMyAccount(), pkt.name(), pkt.templatedid());
+
+	//캐릭터를 만들었으면 데이터베이스의 Account 정보를 다시 불러오자.
+	shared_ptr<Account> account = session->GetMyAccount();
+	account->_players = db->LoadPlayerDb(account);
+	GDBConnectionPool->Push(db);
+
+	//새로 만들어진 캐릭터 정보 리스트를 다시 플레이어한테 보내주자.
+	Protocol::S_LoadingCharacterList pkt2;
+	for (auto player : session->GetMyAccount()->_players)
+	{
+		Protocol::CharacterListElement* element = pkt2.add_characterlist();
+		element->mutable_playerinfo()->CopyFrom(player->GetPlayerInfo());
+		element->mutable_equippeditem()->CopyFrom(player->GetCurrentUseWeapon());
+		element->set_slot(player->PlayerSlot);
+	}
+	session->Send(MakeSendBuffer(pkt2, Protocol::S_LOADING_CHARACTERLIST));
+}
+
+void ServerPacketHandler::Handle_C_DeleteCharacter(GameSessionRef session, BYTE* buffer, int32 len)
+{
+	Protocol::C_DeleteCharacter pkt;
+	PacketHeader* header = (PacketHeader*)buffer;
+	pkt.ParseFromArray(&header[1], header->size - sizeof(PacketHeader));
+
+	shared_ptr<Account> account = session->GetMyAccount();
+	int32 deletePlayerId = account->_players[pkt.slot()]->PlayerDbId;
+
+	DBConnection* db = GDBConnectionPool->Pop();
+	db->DeletePlayerDb(account->GetAccountDbId(), deletePlayerId);
+	account->_players = db->LoadPlayerDb(account);
+	GDBConnectionPool->Push(db);
+
+	//새로 만들어진 캐릭터 정보 리스트를 다시 플레이어한테 보내주자.
+	Protocol::S_LoadingCharacterList pkt2;
+	for (auto player : session->GetMyAccount()->_players)
+	{
+		Protocol::CharacterListElement* element = pkt2.add_characterlist();
+		element->mutable_playerinfo()->CopyFrom(player->GetPlayerInfo());
+		element->mutable_equippeditem()->CopyFrom(player->GetCurrentUseWeapon());
+		element->set_slot(player->PlayerSlot);
+	}
+	session->Send(MakeSendBuffer(pkt2, Protocol::S_LOADING_CHARACTERLIST));
 }

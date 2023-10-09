@@ -1,0 +1,24 @@
+[
+	{
+		"Name": "1",
+		"Id": 1,
+		"QuestName": "NSLOCTEXT(\"[B308E99A4399FD86C65FBAAF9733E8BD]\", \"86636D59435A77D9DF7EF3A8BC604AE9\", \"�� ���\")",
+		"Description": "NSLOCTEXT(\"[B308E99A4399FD86C65FBAAF9733E8BD]\", \"A30F4B3E481D915ADEB897AC8CE634E7\", \"�� 10���� ����Ͻÿ�.\")",
+		"TargetMonsterName": "NSLOCTEXT(\"[B308E99A4399FD86C65FBAAF9733E8BD]\", \"A261B59C4FDE56A483114B8617762644\", \"Bear\")",
+		"TargetTemplatedId": 1,
+		"TargetNumbers": 10,
+		"CurrentProgress": 1,
+		"Model": "/Script/Engine.BlueprintGeneratedClass'/Game/Blueprints/Monster/BP_Bear.BP_Bear_C'"
+	},
+	{
+		"Name": "2",
+		"Id": 2,
+		"QuestName": "NSLOCTEXT(\"[B308E99A4399FD86C65FBAAF9733E8BD]\", \"21A28F98442C739D3FF668A399604C42\", \"������ ���� Grux ���\")",
+		"Description": "NSLOCTEXT(\"[B308E99A4399FD86C65FBAAF9733E8BD]\", \"BC67247F4B317840E602D093FDFA2CFB\", \"�������� �������� �����ؿ� Grux�� ����Ͻÿ�.\")",
+		"TargetMonsterName": "NSLOCTEXT(\"[B308E99A4399FD86C65FBAAF9733E8BD]\", \"C0FD575F4B66732C4C5706BCCA1E5FA7\", \"Grux\")",
+		"TargetTemplatedId": 2,
+		"TargetNumbers": 1,
+		"CurrentProgress": 0,
+		"Model": "/Script/Engine.BlueprintGeneratedClass'/Game/Blueprints/Monster/BP_Grux.BP_Grux_C'"
+	}
+]

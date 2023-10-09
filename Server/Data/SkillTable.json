@@ -1,0 +1,58 @@
+[
+	{
+		"Name": "Stampede",
+		"Description": "Grux Skill",
+		"SkillType": "SKILL_2",
+		"CoolTime": 10,
+		"Damage": 50,
+		"SkillObject": "/Script/CoreUObject.Class'/Script/MMORPG2.Skill_Stampede'"
+	},
+	{
+		"Name": "ShockWave",
+		"Description": "Grux Skill",
+		"SkillType": "SKILL_1",
+		"CoolTime": 10,
+		"Damage": 10,
+		"SkillObject": "/Script/CoreUObject.Class'/Script/MMORPG2.Skill_ShockWave'"
+	},
+	{
+		"Name": "FlashAttack",
+		"Description": "Shinbi Q",
+		"SkillType": "SKILL_1",
+		"CoolTime": 10,
+		"Damage": 50,
+		"SkillObject": "/Script/CoreUObject.Class'/Script/MMORPG2.FlashAttack'"
+	},
+	{
+		"Name": "Dash",
+		"Description": "Shinbi Dash",
+		"SkillType": "Dash",
+		"CoolTime": 1,
+		"Damage": 0,
+		"SkillObject": "/Script/CoreUObject.Class'/Script/MMORPG2.Dash'"
+	},
+	{
+		"Name": "TripleBash",
+		"Description": "Shinbi E",
+		"SkillType": "SKILL_2",
+		"CoolTime": 3,
+		"Damage": 50,
+		"SkillObject": "/Script/CoreUObject.Class'/Script/MMORPG2.TripleBash'"
+	},
+	{
+		"Name": "PhantomSlash",
+		"Description": "Shinbi R",
+		"SkillType": "SKILL_3",
+		"CoolTime": 2,
+		"Damage": 100,
+		"SkillObject": "/Script/CoreUObject.Class'/Script/MMORPG2.PhantomSlash'"
+	},
+	{
+		"Name": "Roar",
+		"Description": "Grux Skill",
+		"SkillType": "SKILL_3",
+		"CoolTime": 10,
+		"Damage": 30,
+		"SkillObject": "/Script/CoreUObject.Class'/Script/MMORPG2.Skill_Roar'"
+	}
+]

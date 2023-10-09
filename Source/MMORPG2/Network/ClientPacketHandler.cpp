@@ -4,21 +4,32 @@
 #include "ClientPacketHandler.h"
 #include "Kismet/GameplayStatics.h"
 #include "GameManager.h"
-#include "../Managers/ObjectManager.h"
-#include "../Managers/NetworkManager.h"
-#include "../Managers/Manager.h"
-#include "../MyPlayerController.h"
+#include "Managers/ObjectManager.h"
+#include "Managers/NetworkManager.h"
+#include "Managers/UIManager.h"
+#include "Managers/InventoryManager.h"
+#include "MyPlayerController.h"
 #include "BufferHelper.h"
 #include "Buffer.h"
 #include "Protocol.pb.h"
-#include "../MMORPG2GameModeBase.h"
-#include "../StatComponent.h"
-#include "../TitleWidget.h"
+#include "MMORPG2GameModeBase.h"
+#include "StatComponent.h"
+#include "TitleWidget.h"
 #include "Components/TextBlock.h"
 #include "Components/EditableText.h"
 #include "Components/Button.h"
-#include "../MyAnimInstance.h"
-#include "../ChatWidget.h"
+#include "MyAnimInstance.h"
+#include "UI/ChatWidget.h"
+#include "UI/InGameUI.h"
+#include "UI/InventoryUI.h"
+#include "UI/LobbyUI.h"
+#include "UI/CharacterSelectListUI.h"
+#include "UI/QuestUI.h"
+
+void ClientPacketHandler::Init()
+{
+
+}
 
 void ClientPacketHandler::OnRecvPacket(ServerSessionRef session, BYTE* buffer, int32 len)
 {
@@ -35,13 +46,10 @@ void ClientPacketHandler::OnRecvPacket(ServerSessionRef session, BYTE* buffer, i
 	//Utils::DebugLog(string);
 }
 
-void ClientPacketHandler::HandlePacket(PacketMessage packet)
+void ClientPacketHandler::HandlePacket(PacketMessage& packet)
 {
 	PacketHeader* header = (PacketHeader*)packet.pkt.GetData();
 	uint16 id = header->id;
-
-	//FString string = FString::Printf(TEXT("Packet Id[%d]"), id);
-	//Utils::DebugLog(string);
 
 	switch (id)
 	{
@@ -90,6 +98,33 @@ void ClientPacketHandler::HandlePacket(PacketMessage packet)
 		case Protocol::S_PICKUPITEM:
 			Handle_S_PickUpItem(packet);
 			break;
+		case Protocol::S_UPDATE_INFO:
+			Handle_S_UpdateInfo(packet);
+			break;
+		case Protocol::S_ADD_TO_INVENTORY:
+			Handle_S_AddToInventory(packet);
+			break;
+		case Protocol::S_EQUIPPED_ITEM:
+			Handle_S_EquippedItem(packet);
+			break;
+		case Protocol::S_LOADING_CHARACTERLIST:
+			Handle_S_LoadingCharacterList(packet);
+			break;
+		case Protocol::S_REFRESH_INVENTORY:
+			Handle_S_RefreshInventory(packet);
+			break;
+		case Protocol::S_USE_ITEM:
+			Handle_S_UseItem(packet);
+			break;
+		case Protocol::S_BUY_ITEM:
+			Handle_S_BuyItem(packet);
+			break;
+		case Protocol::S_GET_QUEST:
+			Handle_S_GetQuest(packet);
+			break;
+		case Protocol::S_QUEST_UPDATE:
+			Hande_S_UpdateQuest(packet);
+			break;
 	default:
 		break;
 	}
@@ -97,7 +132,7 @@ void ClientPacketHandler::HandlePacket(PacketMessage packet)
 
 
 
-void ClientPacketHandler::Handle_S_TEST(PacketMessage packet)
+void ClientPacketHandler::Handle_S_TEST(PacketMessage& packet)
 {
 	Protocol::S_Test pkt;
 	PacketHeader* header = (PacketHeader*)packet.pkt.GetData();
@@ -110,7 +145,7 @@ void ClientPacketHandler::Handle_S_TEST(PacketMessage packet)
 	Utils::DebugLog(text);
 }
 
-void ClientPacketHandler::Handle_S_SpawnMyPlayer(PacketMessage packet)
+void ClientPacketHandler::Handle_S_SpawnMyPlayer(PacketMessage& packet)
 {
 	Protocol::S_SpawnMyPlayer pkt;
 	PacketHeader* header = (PacketHeader*)packet.pkt.GetData();
@@ -121,12 +156,12 @@ void ClientPacketHandler::Handle_S_SpawnMyPlayer(PacketMessage packet)
 
 	FString debugString = FString::Printf(TEXT("ID[%d] Name [%s]\n"), id, *name);
 	Utils::DebugLog(debugString);
+
+
 	GameInstance->GetObjectManager()->CreateMyPlayer(pkt.info());
-
-
 }
 
-void ClientPacketHandler::Handle_S_AddObjects(PacketMessage packet)
+void ClientPacketHandler::Handle_S_AddObjects(PacketMessage& packet)
 {
 	//오브젝트 생성.
 	Protocol::S_AddObjects pkt;
@@ -142,7 +177,7 @@ void ClientPacketHandler::Handle_S_AddObjects(PacketMessage packet)
 
 }
 
-void ClientPacketHandler::Handle_S_Despawn(PacketMessage packet)
+void ClientPacketHandler::Handle_S_Despawn(PacketMessage& packet)
 {
 	Protocol::S_Despawn pkt;
 	PacketHeader* header = (PacketHeader*)packet.pkt.GetData();
@@ -150,14 +185,12 @@ void ClientPacketHandler::Handle_S_Despawn(PacketMessage packet)
 
 	for (Protocol::ObjectInfo info : pkt.objects())
 	{
-
-		GameInstance->GetObjectManager()->DespawnObject(info);
-
+		GameInstance->GetObjectManager()->DespawnObject(&info);
 	}
 
 }
 
-void ClientPacketHandler::Handle_S_Die(PacketMessage packet)
+void ClientPacketHandler::Handle_S_Die(PacketMessage& packet)
 {
 	Protocol::S_Die pkt;
 	PacketHeader* header = (PacketHeader*)packet.pkt.GetData();
@@ -167,7 +200,7 @@ void ClientPacketHandler::Handle_S_Die(PacketMessage packet)
 	creature->OnDead();
 }
 
-void ClientPacketHandler::Handle_S_Disconnect(PacketMessage packet)
+void ClientPacketHandler::Handle_S_Disconnect(PacketMessage& packet)
 {
 
 	Protocol::S_Disconnect pkt;
@@ -179,7 +212,7 @@ void ClientPacketHandler::Handle_S_Disconnect(PacketMessage packet)
 
 }
 
-void ClientPacketHandler::Handle_S_Move(PacketMessage packet)
+void ClientPacketHandler::Handle_S_Move(PacketMessage& packet)
 {
 	Protocol::S_Move pkt;
 	PacketHeader* header = (PacketHeader*)packet.pkt.GetData();
@@ -198,7 +231,7 @@ void ClientPacketHandler::Handle_S_Move(PacketMessage packet)
 
 }
 
-void ClientPacketHandler::Handle_S_Skill(PacketMessage packet)
+void ClientPacketHandler::Handle_S_Skill(PacketMessage& packet)
 {
 	Protocol::S_Skill pkt;
 	PacketHeader* header = (PacketHeader*)packet.pkt.GetData();
@@ -206,10 +239,15 @@ void ClientPacketHandler::Handle_S_Skill(PacketMessage packet)
 
 	//스킬 패킷 안에는 플레이어와 사용한 스킬 ID 값이 들어 있다.
 	ACreature* player = GameInstance->GetObjectManager()->GetPlayerByID(pkt.info().id());
-	player->UpdatePlayerSkill(pkt.skillid());
+	//FString log = FString::Printf(TEXT("%s가 스킬을 사용합니다."), *player->GetName());
+	//Utils::DebugLog(log);
+	if (IsValid(player) == false)
+		return;
+
+	player->UpdatePlayerSkill(pkt.skillid(), pkt.attackindex());
 }
 
-void ClientPacketHandler::Handle_S_ChangedHP(PacketMessage packet)
+void ClientPacketHandler::Handle_S_ChangedHP(PacketMessage& packet)
 {
 	Protocol::S_ChangedHP pkt;
 	PacketHeader* header = (PacketHeader*)packet.pkt.GetData();
@@ -226,7 +264,7 @@ void ClientPacketHandler::Handle_S_ChangedHP(PacketMessage packet)
 	}
 }
 
-void ClientPacketHandler::Handle_S_Chat(PacketMessage packet)
+void ClientPacketHandler::Handle_S_Chat(PacketMessage& packet)
 {
 	Protocol::S_Chat pkt;
 	PacketHeader* header = (PacketHeader*)packet.pkt.GetData();
@@ -235,49 +273,185 @@ void ClientPacketHandler::Handle_S_Chat(PacketMessage packet)
 
 	//채팅이 날아왔다.
 	FString text = UTF8_TO_TCHAR(pkt.msg().c_str());
-	GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Yellow, *text);
-	UWorld* world = GameInstance->GetWorld();
-	AMMORPG2GameModeBase* mode = Cast<AMMORPG2GameModeBase>(UGameplayStatics::GetGameMode(world));
-	if (IsValid(mode) == false)
+	//GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Yellow, *text);
+
+	UInGameUI* UI = Cast<UInGameUI>(GameInstance->GetUIManager()->GetMainUI());
+	if (IsValid(UI) == false)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("Handle_S_Connect ERROR! Don't find mode!"));
-		GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Yellow, TEXT("Handle_S_Connect ERROR! Don't find mode!"));
+		Utils::DebugLog(TEXT("Handle_S_Chat Error. UInGameUI를 찾을 수 없습니다."));
 		return;
 	}
 
-	UChatWidget* chat = Cast<UChatWidget>(mode->Main_UI);
-	if (IsValid(chat) == false)
-	{
-		UE_LOG(LogTemp, Warning, TEXT("Handle_S_Chat ERROR! Don't find chat Widget"));
-		GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Yellow, TEXT("Handle_S_Chat ERROR! Don't find chat Widget"));
-		return;
-	}
-	chat->UpdateChat(text);
+	UI->ChatUI->UpdateChat(text);
 
 
 }
 
-void ClientPacketHandler::Handle_S_PickUpItem(PacketMessage packet)
+void ClientPacketHandler::Handle_S_PickUpItem(PacketMessage& packet)
 {
 	Protocol::S_PickUpItem pkt;
 	PacketHeader* header = (PacketHeader*)packet.pkt.GetData();
 	pkt.ParseFromArray(&header[1], header->size - sizeof(PacketHeader));
 
 	//누가 먹었는지 플레이어를 찾는다.
-	ACreature* player = GameInstance->GetObjectManager()->GetPlayerByID(pkt.info().id());
+	ARPGPlayer* player = Cast<ARPGPlayer>(GameInstance->GetObjectManager()->GetPlayerByID(pkt.info().id()));
 	if (IsValid(player) == false)
+	{
 		Utils::DebugLog("Handle S PickUpItem Error");
-
+		return;
+	}
 	AMyItem* pickedItem = GameInstance->GetObjectManager()->GetItemByID(pkt.pickitem().id());
-	if(IsValid(pickedItem) == false )
+	if (IsValid(pickedItem) == false)
+	{
 		Utils::DebugLog("Handle S PickUpItem Error");
+		return;
+	}
+	//먹은 사람이 자신일 경우 인벤토리에 넣어준다.
+	if(pkt.info().id() == GameInstance->GetObjectManager()->GetMyPlayer()->GetInfo()->id())
+		player->AddToInventory(pkt.mutable_iteminfo());
+	//아이템을 먹었다면 필드에서 지워준다.
+	GameInstance->GetObjectManager()->RemoveItemByID(pickedItem->GetObjectInfo().id());
+}
 
-	player->EquippedItem(pickedItem);
+void ClientPacketHandler::Handle_S_UpdateInfo(PacketMessage& packet)
+{
+	Protocol::S_UpdateInfo pkt;
+	PacketHeader* header = (PacketHeader*)packet.pkt.GetData();
+	pkt.ParseFromArray(&header[1], header->size - sizeof(PacketHeader));
+
+	ACreature* creature = GameInstance->GetObjectManager()->GetPlayerByID(pkt.info().id());
+	if (IsValid(creature) == false)
+		return;
+	creature->UpdateInfo(pkt.mutable_info());
+
+}
+
+void ClientPacketHandler::Handle_S_AddToInventory(PacketMessage& packet)
+{
+	Protocol::S_AddToInventory pkt;
+	PacketHeader* header = (PacketHeader*)packet.pkt.GetData();
+	pkt.ParseFromArray(&header[1], header->size - sizeof(PacketHeader));
+
+	for (auto item : pkt.items())
+	{
+		GameInstance->GetInventory()->AddItem(&item);
+	}
+
+	UInGameUI* ui = Cast<UInGameUI>(GameInstance->GetUIManager()->GetMainUI());
+	if (IsValid(ui) == false)
+	{
+		Utils::DebugLog("Handle_S_AddToInventory Error");
+		return;
+	}
+
+	ui->InventoryUI->RefreshUI();
+
+}
+
+void ClientPacketHandler::Handle_S_RefreshInventory(PacketMessage& packet)
+{
+	Protocol::S_RefreshInventory pkt;
+	PacketHeader* header = (PacketHeader*)packet.pkt.GetData();
+	pkt.ParseFromArray(&header[1], header->size - sizeof(PacketHeader));
+
+
+	GameInstance->GetInventory()->Items.Empty();
+	for (auto item : pkt.items())
+	{
+		GameInstance->GetInventory()->AddItem(&item);
+	}
+
+	UInGameUI* ui = Cast<UInGameUI>(GameInstance->GetUIManager()->GetMainUI());
+	if (IsValid(ui) == false)
+	{
+		Utils::DebugLog("Handle_S_AddToInventory Error");
+		return;
+	}
+
+	ui->InventoryUI->Gold = pkt.gold();
+	ui->InventoryUI->RefreshUI();
+}
+
+void ClientPacketHandler::Handle_S_EquippedItem(PacketMessage& packet)
+{
+	Protocol::S_EquippedItem pkt;
+	PacketHeader* header = (PacketHeader*)packet.pkt.GetData();
+	pkt.ParseFromArray(&header[1], header->size - sizeof(PacketHeader));
+
+	//누가 먹었는지 플레이어를 찾는다.
+	ARPGPlayer* player = Cast<ARPGPlayer>(GameInstance->GetObjectManager()->GetPlayerByID(pkt.playerinfo().id()));
+	if (IsValid(player) == false)
+	{
+		Utils::DebugLog("Handle S PickUpItem Error");
+		return;
+	}
+
+	player->EquippedItem(pkt.mutable_iteminfo());
+
+}
+
+void ClientPacketHandler::Handle_S_UseItem(PacketMessage& packet)
+{
+	Protocol::S_UseItem pkt;
+	PacketHeader* header = (PacketHeader*)packet.pkt.GetData();
+	pkt.ParseFromArray(&header[1], header->size - sizeof(PacketHeader));
+
+
+	//누가 먹었는지 플레이어를 찾는다.
+	ARPGPlayer* player = Cast<ARPGPlayer>(GameInstance->GetObjectManager()->GetPlayerByID(pkt.playerinfo().id()));
+	if (IsValid(player) == false)
+	{
+		Utils::DebugLog("Handle S Use Item");
+		return;
+	}
+}
+
+void ClientPacketHandler::Handle_S_BuyItem(PacketMessage& packet)
+{
+	Protocol::S_BuyItem pkt;
+	PacketHeader* header = (PacketHeader*)packet.pkt.GetData();
+	pkt.ParseFromArray(&header[1], header->size - sizeof(PacketHeader));
 
 
 }
 
-void ClientPacketHandler::Handle_S_Connect(PacketMessage packet)
+void ClientPacketHandler::Handle_S_GetQuest(PacketMessage& packet)
+{
+	Protocol::S_GetQuest pkt;
+	PacketHeader* header = (PacketHeader*)packet.pkt.GetData();
+	pkt.ParseFromArray(&header[1], header->size - sizeof(PacketHeader));
+
+	//업데이트 해주기.
+	UInGameUI* ui = Cast<UInGameUI>(GameInstance->GetUIManager()->GetMainUI());
+	if (IsValid(ui) == false)
+	{
+		Utils::DebugLog("Handle_S_GetQuest Error");
+		return;
+	}
+
+	ui->QuestUI->AddQuest(pkt.questtemplatedid(), pkt.currentprogress());
+	//ui->QuestUI->RefreshUI();
+}
+
+void ClientPacketHandler::Hande_S_UpdateQuest(PacketMessage& packet)
+{
+	Protocol::S_UpdateQuest pkt;
+	PacketHeader* header = (PacketHeader*)packet.pkt.GetData();
+	pkt.ParseFromArray(&header[1], header->size - sizeof(PacketHeader));
+
+	//업데이트 해주기.
+	UInGameUI* ui = Cast<UInGameUI>(GameInstance->GetUIManager()->GetMainUI());
+	if (IsValid(ui) == false)
+	{
+		Utils::DebugLog("Hande_S_UpdateQuest Error");
+		return;
+	}
+
+	ui->QuestUI->GetQuestData(pkt.questtemplatedid())->CurrentProgress = pkt.currentprogress();
+	ui->QuestUI->RefreshUI();
+}
+
+void ClientPacketHandler::Handle_S_Connect(PacketMessage& packet)
 {
 	Protocol::S_Connect pkt;
 	PacketHeader* header = (PacketHeader*)packet.pkt.GetData();
@@ -286,7 +460,7 @@ void ClientPacketHandler::Handle_S_Connect(PacketMessage packet)
 	//서버에서 보내준 String  파싱
 	//FString text = FString::Printf(TEXT("%s"), pkt.info().c_str());
 	FString text = UTF8_TO_TCHAR(pkt.info().c_str());
-	GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Yellow, *text);
+	//GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Yellow, *text);
 
 	//연결이 되었다. 이 시점에서 현재 사용자의 위치는 Title 화면.
 	//Title 화면에 어떻게 정보를 전달해야할까?
@@ -300,7 +474,7 @@ void ClientPacketHandler::Handle_S_Connect(PacketMessage packet)
 		return;
 	}
 
-	UTitleWidget* title = Cast<UTitleWidget>(mode->Main_UI);
+	UTitleWidget* title = Cast<UTitleWidget>(mode->MainUI);
 	if (IsValid(title) == false)
 	{
 		UE_LOG(LogTemp, Warning, TEXT("Handle_S_Connect ERROR! Don't find Title Widget"));
@@ -322,7 +496,7 @@ void ClientPacketHandler::Handle_S_Connect(PacketMessage packet)
 	//이후 로그인 절차가 끝나면 레벨 이동 후 캐릭터 생성
 }
 
-void ClientPacketHandler::Handle_S_SuccessLogin(PacketMessage packet)
+void ClientPacketHandler::Handle_S_SuccessLogin(PacketMessage& packet)
 {
 	Protocol::S_SuccessLogin pkt;
 	PacketHeader* header = (PacketHeader*)packet.pkt.GetData();
@@ -342,7 +516,7 @@ void ClientPacketHandler::Handle_S_SuccessLogin(PacketMessage packet)
 		return;
 	}
 
-	UTitleWidget* title = Cast<UTitleWidget>(mode->Main_UI);
+	UTitleWidget* title = Cast<UTitleWidget>(mode->MainUI);
 	if (IsValid(title) == false)
 	{
 		UE_LOG(LogTemp, Warning, TEXT("Handle_S_Connect ERROR! Don't find Title Widget"));
@@ -356,25 +530,10 @@ void ClientPacketHandler::Handle_S_SuccessLogin(PacketMessage packet)
 	//이 단계에 들어갔다는 건 서버에서 아이디와 비밀번호를 받고, 로그인에 성공했다는 것.
 	//Title 상태를 바꿔서, Login 확인 패킷을 여러번 보낼 수 없게 만들어준다.
 	title->CurrentState = TitleState::LoginSuccess;
-
-	//TODO
-	//나중에 Load 화면을 넣어주자. 
-	GameInstance->LoadGameLevel(FString(TEXT("Game")));
-
-	FTimerHandle WaitHandle;
-	float WaitTime = 1.0f; //시간을 설정하고
-	GameInstance->GetWorld()->GetTimerManager().SetTimer(WaitHandle, FTimerDelegate::CreateLambda([&]()
-		{
-
-
-			//화면 이동이 끝났으면, 서버에 캐릭터 생성 요청을 날린다.
-			Make_C_EnterRoom();
-
-		}), WaitTime, false); 
-		
+	GameInstance->LoadGameLevel(FString(TEXT("Lobby")));
 }
 
-void ClientPacketHandler::Handle_S_CreateAccount(PacketMessage packet)
+void ClientPacketHandler::Handle_S_CreateAccount(PacketMessage& packet)
 {
 	Protocol::S_CreateAccount pkt;
 	PacketHeader* header = (PacketHeader*)packet.pkt.GetData();
@@ -385,7 +544,7 @@ void ClientPacketHandler::Handle_S_CreateAccount(PacketMessage packet)
 	//현재 화면의 UI 가져오기
 	UWorld* world = GameInstance->GetWorld();
 	AMMORPG2GameModeBase* mode = Cast<AMMORPG2GameModeBase>(UGameplayStatics::GetGameMode(world));
-	UTitleWidget* title = Cast<UTitleWidget>(mode->Main_UI);
+	UTitleWidget* title = Cast<UTitleWidget>(mode->MainUI);
 	FText serverText = FText::FromString(text);
 	title->Information_Text->SetText(serverText);
 
@@ -394,18 +553,18 @@ void ClientPacketHandler::Handle_S_CreateAccount(PacketMessage packet)
 		return;
 
 	//성공적으로 끝났으면 로그인 후 게임 접속
-	title->CurrentState = TitleState::LoginSuccess;
-	FTimerHandle WaitHandle;
-	float WaitTime = 1.0f; //시간을 설정하고
-	GameInstance->GetWorld()->GetTimerManager().SetTimer(WaitHandle, FTimerDelegate::CreateLambda([&]()
-		{
+	title->GoToConnectState();
+	//FTimerHandle WaitHandle;
+	//float WaitTime = 1.0f; //시간을 설정하고
+	//GameInstance->GetWorld()->GetTimerManager().SetTimer(WaitHandle, FTimerDelegate::CreateLambda([&]()
+	//	{
 
-			GameInstance->LoadGameLevel(FString(TEXT("Game")));
-			Make_C_EnterRoom();
-		}), WaitTime, false);
+	//		GameInstance->LoadGameLevel(FString(TEXT("Game")));
+	//		Make_C_EnterRoom();
+	//	}), WaitTime, false);
 }
 
-void ClientPacketHandler::Handle_S_FailedLogin(PacketMessage packet)
+void ClientPacketHandler::Handle_S_FailedLogin(PacketMessage& packet)
 {
 	Protocol::S_FailedLogin pkt;
 	PacketHeader* header = (PacketHeader*)packet.pkt.GetData();
@@ -416,9 +575,33 @@ void ClientPacketHandler::Handle_S_FailedLogin(PacketMessage packet)
 	//현재 화면의 UI 가져오기
 	UWorld* world = GameInstance->GetWorld();
 	AMMORPG2GameModeBase* mode = Cast<AMMORPG2GameModeBase>(UGameplayStatics::GetGameMode(world));
-	UTitleWidget* title = Cast<UTitleWidget>(mode->Main_UI);
+	UTitleWidget* title = Cast<UTitleWidget>(mode->MainUI);
 	FText serverText = FText::FromString(text);
 	title->Information_Text->SetText(serverText);
+}
+
+void ClientPacketHandler::Handle_S_LoadingCharacterList(PacketMessage& packet)
+{
+	Protocol::S_LoadingCharacterList pkt;
+	PacketHeader* header = (PacketHeader*)packet.pkt.GetData();
+	pkt.ParseFromArray(&header[1], header->size - sizeof(PacketHeader));
+
+	ULobbyUI* UI = Cast<ULobbyUI>(GameInstance->GetUIManager()->GetMainUI());
+	if (IsValid(UI) == false)
+	{
+		Utils::DebugLog(TEXT("Handle_S_LoadingCharacterList Error"));
+		return;
+	}
+
+	Utils::DebugLog(TEXT("Handle_S_LoadingCharacterList"));
+	UI->CharacterList->CharacterInfos.Empty();
+	for (auto element : pkt.characterlist())
+	{
+		Protocol::CharacterListElement ele;
+		ele.CopyFrom(element);
+		UI->CharacterList->CharacterInfos.Add(ele);
+	}
+	UI->CharacterList->RefreshUI();
 }
 
 
@@ -468,17 +651,85 @@ void ClientPacketHandler::Make_C_Chat(FString msg)
 	GameInstance->GetNetworkManager()->SendPacket(sendBuffer);
 }
 
-void ClientPacketHandler::Make_C_PickUpItem(Protocol::ObjectInfo info, Protocol::ObjectInfo PickItem)
+void ClientPacketHandler::Make_C_PickUpItem(Protocol::ObjectInfo info, Protocol::ObjectInfo pickItem)
 {
 	Protocol::C_PickUpItem pkt;
 	pkt.mutable_info()->CopyFrom(info);
-	pkt.mutable_pickitem()->CopyFrom(PickItem);
+	pkt.mutable_pickitem()->CopyFrom(pickItem);
 
 
 	SendBufferRef sendBuffer = MakeSendBuffer(pkt, Protocol::C_PICKUPITEM);
 	GameInstance->GetNetworkManager()->SendPacket(sendBuffer);
 
 }
+
+void ClientPacketHandler::Make_C_MonsterMove(Protocol::ObjectInfo info)
+{
+	Protocol::C_MonsterMove pkt;
+	Protocol::ObjectInfo* pktInfo = pkt.mutable_info();
+	*pktInfo = info;
+	SendBufferRef sendBuffer = MakeSendBuffer(pkt, Protocol::C_MONSTER_MOVE);
+
+	GameInstance->GetNetworkManager()->SendPacket(sendBuffer);
+}
+
+void ClientPacketHandler::Make_C_AddToInventory(Protocol::ObjectInfo player, Protocol::ObjectInfo itemInfo)
+{
+	Protocol::C_AddToInventory pkt;
+	pkt.mutable_playerinfo()->CopyFrom(player);
+	pkt.mutable_iteminfo()->CopyFrom(itemInfo);
+	SendBufferRef sendBuffer = MakeSendBuffer(pkt, Protocol::C_ADD_TO_INVENTORY);
+
+	GameInstance->GetNetworkManager()->SendPacket(sendBuffer);
+}
+
+void ClientPacketHandler::Make_C_EquippedItem(Protocol::ObjectInfo player, Protocol::ItemInfo itemInfo)
+{
+	Protocol::C_EquippedItem pkt;
+	pkt.mutable_playerinfo()->CopyFrom(player);
+	pkt.mutable_iteminfo()->CopyFrom(itemInfo);
+	SendBufferRef sendBuffer = MakeSendBuffer(pkt, Protocol::C_EQUIPPED_ITEM);
+
+	GameInstance->GetNetworkManager()->SendPacket(sendBuffer);
+
+}
+
+void ClientPacketHandler::Make_C_UseItem(Protocol::ObjectInfo player, Protocol::ItemInfo itemInfo)
+{
+	Protocol::C_UseItem pkt;
+	pkt.mutable_playerinfo()->CopyFrom(player);
+	pkt.mutable_iteminfo()->CopyFrom(itemInfo);
+	SendBufferRef sendBuffer = MakeSendBuffer(pkt, Protocol::C_USE_ITEM);
+
+	GameInstance->GetNetworkManager()->SendPacket(sendBuffer);
+
+
+}
+
+void ClientPacketHandler::Make_C_BuyItem(int32 itemTemplatedId)
+{
+	Protocol::C_BuyItem pkt;
+	pkt.set_itemtemplatedid(itemTemplatedId);
+	SendBufferRef sendBuffer = MakeSendBuffer(pkt, Protocol::C_BUY_ITEM);
+	GameInstance->GetNetworkManager()->SendPacket(sendBuffer);
+}
+
+void ClientPacketHandler::Make_C_SpawnBoss()
+{
+	Protocol::C_Spanw_Boss pkt;
+	SendBufferRef sendBuffer = MakeSendBuffer(pkt, Protocol::C_SPAWN_BOSS);
+	GameInstance->GetNetworkManager()->SendPacket(sendBuffer);
+
+}
+
+void ClientPacketHandler::Make_C_GetQuest(int32 questTemplatedId)
+{
+	Protocol::C_GetQuest pkt;
+	pkt.set_questtemplatedid(questTemplatedId);
+	SendBufferRef sendBuffer = MakeSendBuffer(pkt, Protocol::C_GET_QUEST);
+	GameInstance->GetNetworkManager()->SendPacket(sendBuffer);
+}
+
 
 void ClientPacketHandler::Make_C_TryLogin(FString id, FString password)
 {
@@ -506,4 +757,35 @@ void ClientPacketHandler::Make_C_CreateAccount(FString id, FString password)
 	pkt.set_password(TCHAR_TO_UTF8(*password));
 	SendBufferRef sendBuffer = MakeSendBuffer(pkt, Protocol::C_CREATEACCOUNT);
 	GameInstance->GetNetworkManager()->SendPacket(sendBuffer);
+}
+
+void ClientPacketHandler::Make_C_LoadingCharacterList()
+{
+	Protocol::C_LoadingCharacterList pkt;
+	SendBufferRef sendBuffer = MakeSendBuffer(pkt, Protocol::C_LOADING_CHARACTERLIST);
+	GameInstance->GetNetworkManager()->SendPacket(sendBuffer);
+}
+
+void ClientPacketHandler::Make_C_CreateCharacter(int32 templatedId, FString name)
+{
+	Protocol::C_CreateCharacter pkt;
+	pkt.set_templatedid(templatedId);
+
+	string characterName;
+	WideCharToMultiByte(CP_ACP, 0, *name, -1, characterName.data(), 256, NULL, NULL);
+	pkt.set_name(characterName.c_str());
+
+	SendBufferRef sendBuffer = MakeSendBuffer(pkt, Protocol::C_CREATE_CHARACTER);
+	GameInstance->GetNetworkManager()->SendPacket(sendBuffer);
+
+}
+
+void ClientPacketHandler::Make_C_DeleteCharacter(int32 slot)
+{
+	Protocol::C_DeleteCharacter pkt;
+	pkt.set_slot(slot);
+
+	SendBufferRef sendBuffer = MakeSendBuffer(pkt, Protocol::C_DELETE_CHARACTER);
+	GameInstance->GetNetworkManager()->SendPacket(sendBuffer);
+
 }

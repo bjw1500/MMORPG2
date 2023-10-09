@@ -2,11 +2,11 @@
 
 
 #include "NetworkManager.h"
-#include "../Network/NetworkSession.h"
+#include "Network/NetworkSession.h"
 #include "Kismet/GameplayStatics.h"
-#include "../Network/Service.h"
-#include "../Network/SocketUtils.h"
-#include "../Network/FWorker.h"
+#include "Network/Service.h"
+#include "Network/SocketUtils.h"
+#include "Network/FWorker.h"
 
 NetworkManager::NetworkManager()
 {
@@ -24,15 +24,12 @@ bool NetworkManager::Init(wstring ip)
 		return false;
 	if (GameInstance->bOnline == false)
 	{
-		GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Yellow, FString::Printf(TEXT("Online is false")));
+		//GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Yellow, FString::Printf(TEXT("Online is false")));
 		return false;
 	}
 
 
 	SocketUtils::Init();
-	GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Yellow, FString::Printf(TEXT("Network Manager Init")));
-	UE_LOG(LogTemp, Warning, TEXT("Network Manager Init"));
-
 	_service = MakeShared<ClientService>(
 		NetAddress(ip, 7777),
 		MakeShared<IocpCore>(),

@@ -68,17 +68,23 @@
     <ClCompile Include="DBConnectionPool.cpp">
       <Filter>소스 파일\DB</Filter>
     </ClCompile>
-    <ClCompile Include="Account.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
     <ClCompile Include="DataManager.cpp">
       <Filter>소스 파일\Data</Filter>
     </ClCompile>
     <ClCompile Include="DataContents.cpp">
       <Filter>소스 파일\Data</Filter>
     </ClCompile>
+    <ClCompile Include="Grux.cpp">
+      <Filter>소스 파일\Game</Filter>
+    </ClCompile>
     <ClCompile Include="Item.cpp">
-      <Filter>소스 파일</Filter>
+      <Filter>소스 파일\Game</Filter>
+    </ClCompile>
+    <ClCompile Include="Account.cpp">
+      <Filter>소스 파일\DB</Filter>
+    </ClCompile>
+    <ClCompile Include="Inventory.cpp">
+      <Filter>소스 파일\Game</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -118,14 +124,24 @@
     <ClInclude Include="DBConnectionPool.h">
       <Filter>소스 파일\DB</Filter>
     </ClInclude>
-    <ClInclude Include="Account.h" />
     <ClInclude Include="DataManager.h">
       <Filter>소스 파일\Data</Filter>
     </ClInclude>
     <ClInclude Include="DataContents.h">
       <Filter>소스 파일\Data</Filter>
     </ClInclude>
-    <ClInclude Include="Item.h" />
+    <ClInclude Include="Grux.h">
+      <Filter>소스 파일\Game</Filter>
+    </ClInclude>
+    <ClInclude Include="Item.h">
+      <Filter>소스 파일\Game</Filter>
+    </ClInclude>
+    <ClInclude Include="Account.h">
+      <Filter>소스 파일\DB</Filter>
+    </ClInclude>
+    <ClInclude Include="Inventory.h">
+      <Filter>소스 파일\Game</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\Common\protoc-21.12-win64\bin\Protocol.proto">

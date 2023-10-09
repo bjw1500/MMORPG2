@@ -19,13 +19,12 @@ public:
 	GameSessionRef GetSessionRef() { return static_pointer_cast<GameSession> (shared_from_this()); }
 
 
-	PlayerRef GetMyPlayer() { return _myPlayer; }
 	void SetMyPlayer(PlayerRef player) { _myPlayer = player; }
-	shared_ptr<class Account> GetMyAccount() { return _myAccount; }
 	void SetMyAccount(shared_ptr<class Account> account) { _myAccount = account; }
+	PlayerRef GetMyPlayer() { return _myPlayer; }
+	shared_ptr<class Account> GetMyAccount() { return _myAccount; }
 
 private:
 	PlayerRef _myPlayer;
 	shared_ptr<class Account> _myAccount;
-
 };

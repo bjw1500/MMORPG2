@@ -366,7 +366,7 @@ void ServerSession::OnConnected()
 {
 
 	//FString string = TEXT("���� ����");
-	GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Yellow, FString::Printf(TEXT("On Connected")));
+	//GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Yellow, FString::Printf(TEXT("On Connected")));
 	GameInstance->bConnected = true;
 	//UE_Utils::ScreenDebugMessage(TEXT("���� ����!"));
 }
@@ -382,7 +382,6 @@ void ServerSession::OnSend(int32 len)
 
 void ServerSession::OnDisconnected()
 {
-	GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Yellow, TEXT("On Disconnected!"));
 	ThreadManager::GetInstance()->Join();
 	GameInstance->GetPacketQueue()->PopAll();
 
