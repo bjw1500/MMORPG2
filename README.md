@@ -15,7 +15,7 @@ DataBase : Mssql
 
 이메일 :bjw1400@gmail.com
 
-시연 영상 : https://youtu.be/DkfdnQeZFVw
+시연 영상 : https://youtu.be/_5PxpI-6Ik4
 
 
 구현기능
