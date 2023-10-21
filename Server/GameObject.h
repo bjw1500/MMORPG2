@@ -13,7 +13,7 @@ public:
 
 
 	/////////////
-	Protocol::ObjectInfo GetInfo() { return _info; };
+	Protocol::ObjectInfo& GetInfo() { return _info; };
 	void SetInfo(Protocol::ObjectInfo& info) {_info.CopyFrom(info); };
 
 	Protocol::Position GetPos() { return _info.position(); }

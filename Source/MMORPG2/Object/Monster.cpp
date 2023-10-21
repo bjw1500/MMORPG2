@@ -2,6 +2,7 @@
 
 
 #include "Monster.h"
+
 #include "Managers/ObjectManager.h"
 #include "Network/GameManager.h"
 #include "GameFramework/CharacterMovementComponent.h"
@@ -15,7 +16,9 @@
 #include "Network/ClientPacketHandler.h"
 #include "UI/InGameUI.h"
 #include "UI/MonsterUI.h"
+#include "HpBarWidget.h"
 #include "Kismet/GameplayStatics.h"
+#include "Components/WidgetComponent.h"
 
 
 
@@ -43,6 +46,14 @@ void AMonster::BeginPlay()
 			break;
 		}
 	}
+
+
+}
+
+void AMonster::PostInitializeComponents()
+{
+	Super::PostInitializeComponents();
+
 }
 
 void AMonster::Tick(float DeltaSeconds)
@@ -98,29 +109,48 @@ void AMonster::OnDead()
 void AMonster::RotationToTarget()
 {
 		ACreature* target= GameInstance->GetObjectManager()->GetPlayerByID(GetInfo()->targetid());
+
 		if (IsValid(target) == false)
 		{
 			//target이 없다면,
-			if (IsTracking == true)
+			if (IsTracking == true && GetMonsterData()->MonsterType == EMonsterType::Boss)
 			{
 				UInGameUI* UI = Cast<UInGameUI>(GameInstance->GetUIManager()->GetMainUI());
 				UI->MonsterUI->UnBind();
 				IsTracking = false;
 			}
+			else if (IsTracking  == true && GetMonsterData()->MonsterType == EMonsterType::Normal)
+			{
+				UHpBarWidget* hpBar = Cast<UHpBarWidget>(HpBar->GetUserWidgetObject());
+				FMonsterData* data = GetMonsterData();
+				if (data == nullptr)
+					return;
+					hpBar->SetVisibility(ESlateVisibility::Hidden);
+				IsTracking = false;
+			}
 			return;
 		}
 
-		if (IsTracking == false)
+		if (IsTracking == false &&GetMonsterData()->MonsterType == EMonsterType::Boss)
 		{
 			//타깃이 존재한다면,
 			UInGameUI* UI = Cast<UInGameUI>(GameInstance->GetUIManager()->GetMainUI());
 			UI->MonsterUI->BindMonster(this);
 			IsTracking = true;
 		}
+		else if (IsTracking == false && GetMonsterData()->MonsterType == EMonsterType::Normal)
+		{
+			UHpBarWidget* hpBar = Cast<UHpBarWidget>(HpBar->GetUserWidgetObject());
+			FMonsterData* data = GetMonsterData();
+			if (data == nullptr)
+				return;
+			hpBar->SetVisibility(ESlateVisibility::Visible);
+			IsTracking = true;
+		}
 
-		FRotator look = UKismetMathLibrary::FindLookAtRotation(GetActorLocation(), target->GetActorLocation());
-		look.Pitch = 0;
-		SetActorRelativeRotation(look);
+		//FRotator look = UKismetMathLibrary::FindLookAtRotation(GetActorLocation(), target->GetActorLocation());
+		//look.Pitch = 0;
+		//SetActorRelativeRotation(look);
 }
 
 void AMonster::SyncPos()
@@ -174,6 +204,11 @@ void AMonster::UpdateInfo(Protocol::ObjectInfo* info)
 	location.Y = Info.position().locationy();
 	location.Z = Info.position().locationz();
 
+	FRotator rotation;
+	rotation.Roll = Info.position().rotationx();
+	rotation.Pitch = Info.position().rotationy();
+	rotation.Yaw = Info.position().rotationz();
+
 	RotationToTarget();
 	FVector velocity;
 	velocity.X = Info.position().velocityx();
@@ -182,7 +217,8 @@ void AMonster::UpdateInfo(Protocol::ObjectInfo* info)
 	GetCharacterMovement()->Velocity = velocity;
 
 	//TODO Velocity 추가
-	SetActorRelativeLocation(location);
+	SetActorLocationAndRotation(location, rotation);
+	//SetActorRelativeLocation(location);
 	//UAIBlueprintHelperLibrary::SimpleMoveToLocation(GetController(), location);
 	Horizontal = GetCharacterMovement()->Velocity.X;
 	Vertical = GetCharacterMovement()->Velocity.Y;

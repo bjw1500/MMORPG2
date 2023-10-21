@@ -160,6 +160,7 @@ void UObjectManager::CreateObject(Protocol::ObjectInfo info)
 		if (IsValid(newMonster) == false)
 			return;
 		newMonster->Setinfo(info);
+		newMonster->SetMonsterData(*data);
 		Monsters.Add(info.id(), newMonster);
 		newMonster->SyncPos();
 		newMonster->ThisMasterOtherClient = true;

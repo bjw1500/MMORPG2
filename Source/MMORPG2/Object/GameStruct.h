@@ -59,6 +59,13 @@ struct FRewardData : public FTableRowBase
 		int32 Count;
 };
 
+UENUM()
+enum EMonsterType
+{
+	Normal,
+	Boss,
+};
+
 USTRUCT(Atomic, BlueprintType)
 struct FMonsterData : public FTableRowBase
 {
@@ -72,6 +79,9 @@ struct FMonsterData : public FTableRowBase
 
 		UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		FStatData Stat;
+
+		UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		TEnumAsByte<EMonsterType> MonsterType;
 
 		UPROPERTY(EditAnyWhere, BlueprintReadWrite)
 		TArray<FRewardData> RewardDatas;

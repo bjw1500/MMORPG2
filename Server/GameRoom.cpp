@@ -107,7 +107,6 @@ void GameRoom::EnterPlayer(GameSessionRef session, int32 selectedNumber)
 		{
 			Protocol::ObjectInfo* info = pkt.add_objects();
 			*info = item.second->GetInfo();
-
 		}
 
 		for (auto& monster : _monsters)
