@@ -15,7 +15,7 @@ DataBase : Mssql
 
 이메일 :bjw1400@gmail.com
 
-시연 영상 : https://youtu.be/xV1dbqMqHRM
+시연 영상 : https://youtu.be/_5PxpI-6Ik4
 
 
 구현기능
@@ -26,8 +26,16 @@ IOCP 실시간 서버(서버 코어 라이브러리는 인프런의 Rookiss 강�
 DB를 이용한 회원가입 및 로그인
 
 
-
 채팅 기능
 
 
 AI 몬스터
+
+
+인벤토리
+
+
+퀘스트
+
+
+상점
