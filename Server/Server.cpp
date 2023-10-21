@@ -51,8 +51,13 @@ int main()
 			});
 	}
 
-	GRoom->EnterMonster(-2200.0, -3000, 50);
-	GRoom->EnterMonster(-2400.0, -3000, 50);
+	//0 -5000 // -5000 -10000
+	GRoom->EnterMonster(0, -5000, 50);
+	GRoom->EnterMonster(-3000, -6000, 50);
+	GRoom->EnterMonster(0, -7600, 50);
+	GRoom->EnterMonster(-4000, -8000, 50);
+	GRoom->EnterMonster(-5000, -8000, 50);
+	GRoom->EnterMonster(-2000, -7000, 50);
 	Protocol::ItemInfo rewardItem = GDataManager->GetItemData(101);
 	Protocol::Position position;
 	position.set_locationx(-3300.0);

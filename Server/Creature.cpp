@@ -101,7 +101,7 @@ void Creature::UnBindTarget()
 	currentPos.set_velocityy(0);
 	currentPos.set_velocityz(0);
 	SetPos(currentPos);
-	SetState(Idle);
+	//SetState(Idle);
 
 	//Protocol::S_Move pkt;
 	//Protocol::ObjectInfo* sInfo = pkt.mutable_info();

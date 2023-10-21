@@ -27,6 +27,9 @@ void Monster::Update(float deltaTime)
 		_attackCoolTime += deltaTime;
 	if (GetState() == Casting)
 		_castingTime += deltaTime;
+	if (GetState() == Idle)
+		_patrolTime += deltaTime;
+
 
 	UpdateController();
 }
@@ -64,12 +67,40 @@ void Monster::UpdateIdle()
 	bool ret = SearchTarget();
 	if (ret == true)
 		SetState(CreatureState::Move);
+
+	//순찰해주기
+	if (_patrolTime >= _nextPartol)
+	{
+		_patrolPoint = GetRandomPosition();
+		_patrolTime = 0;
+		_isPatrol = true;
+		SetState(CreatureState::Move);
+	}
+
 }
 
 void Monster::UpdateMove()
 {
-	//AI 이동은 언리얼 AI를 활용하자.
-	//그래야 네비게이션 활용이 가능.
+	if (_isPatrol == true)
+	{
+		//순찰 지점에 도착했는지 확인.
+		float dis = GetDistanceFromTarget(_patrolPoint);
+		if (dis <= 30.f)
+		{
+			_isPatrol = false;
+			SetState(CreatureState::Idle);
+			return;
+		}
+
+		bool ret = SearchTarget();
+		if (ret == true)
+			_isPatrol = false;
+
+
+		MoveTo(_patrolPoint);
+		return;
+	}
+
 
 	//타겟이 중간에 죽거나, 사라졌으면, Idle 상태로 전환.
 	if (_target == nullptr)
@@ -82,6 +113,8 @@ void Monster::UpdateMove()
 		SetState(CreatureState::Idle);
 		return;
 	}
+
+	//타겟이 존재한다면 거리 재기
 	float dis = GetDistanceFromTarget(_target->GetPos());
 	if (dis > GetInfo().stat().searchrange())
 	{
@@ -175,6 +208,21 @@ FRewardData Monster::GetRandomReward()
 		}
 	}
 	return FRewardData();
+}
+
+Position Monster::GetRandomPosition()
+{
+	std::random_device rd;
+	std::mt19937 gen(rd());
+	std::uniform_int_distribution<int> dis(-1000, 1000);
+	int rand = dis(gen);
+	Protocol::Position randomPosition;
+	randomPosition.set_locationx(GetPos().locationx() + rand);
+	rand = dis(gen);
+	randomPosition.set_locationy(GetPos().locationy() + rand);
+	randomPosition.set_locationz(GetPos().locationz());
+
+	return randomPosition;
 }
 
 
@@ -277,10 +325,66 @@ void Monster::MoveTo(shared_ptr<Creature> target)
 	currentPos.set_velocityz(1);
 
 	SetPos(currentPos);
-
+	LookAt(targetPos);
 	Protocol::S_Move pkt;
 	Protocol::ObjectInfo* sInfo = pkt.mutable_info();
 	sInfo->CopyFrom(GetInfo());
 	SendBufferRef sendBuffer = ServerPacketHandler::MakeSendBuffer(pkt, S_MOVE);
 	GetRoomRef()->BroadCast(sendBuffer);
 }
+
+void Monster::MoveTo(Protocol::Position destination)
+{
+	//타겟을 향해 움직이게 한다?
+	Protocol::Position currentPos = GetPos();
+	float moveSpeed = GetInfo().stat().movespeed() * GetRoomRef()->_deltaTime;
+
+
+
+	//왼쪽
+	if (currentPos.locationx() > destination.locationx())
+	{
+		currentPos.set_locationx(currentPos.locationx() - moveSpeed);
+	}
+	//오른쪽
+	if (currentPos.locationx() < destination.locationx())
+	{
+		currentPos.set_locationx(currentPos.locationx() + moveSpeed);
+	}
+
+	//뒤
+	if (currentPos.locationy() > destination.locationy())
+	{
+		currentPos.set_locationy(currentPos.locationy() - moveSpeed);
+	}
+
+	//앞
+	if (currentPos.locationy() < destination.locationy())
+	{
+		currentPos.set_locationy(currentPos.locationy() + moveSpeed);
+	}
+
+	currentPos.set_velocityx(100);
+	currentPos.set_velocityy(100);
+	currentPos.set_velocityz(1);
+	SetPos(currentPos);
+	LookAt(destination);
+	Protocol::S_Move pkt;
+	Protocol::ObjectInfo* sInfo = pkt.mutable_info();
+	sInfo->CopyFrom(GetInfo());
+	SendBufferRef sendBuffer = ServerPacketHandler::MakeSendBuffer(pkt, S_MOVE);
+	GetRoomRef()->BroadCast(sendBuffer);
+}
+
+void Monster::LookAt(Protocol::Position targetPos)
+{
+	float dirX = targetPos.locationx() - GetPos().locationx();
+	float dirY = targetPos.locationy() - GetPos().locationy();
+	double target_yaw = std::atan2(dirY, dirX);
+	double yawInDegrees = target_yaw * 180.0 / 3.14;
+	Protocol::Position currentPos = GetPos();
+	currentPos.set_rotationz(yawInDegrees);
+	SetPos(currentPos);
+}
+
+

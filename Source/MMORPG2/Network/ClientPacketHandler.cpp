@@ -447,7 +447,11 @@ void ClientPacketHandler::Hande_S_UpdateQuest(PacketMessage& packet)
 		return;
 	}
 
-	ui->QuestUI->GetQuestData(pkt.questtemplatedid())->CurrentProgress = pkt.currentprogress();
+	FQuestData* data = ui->QuestUI->GetQuestData(pkt.questtemplatedid());
+	if (data == nullptr)
+		return;
+
+	data->CurrentProgress = pkt.currentprogress();
 	ui->QuestUI->RefreshUI();
 }
 

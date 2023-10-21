@@ -48,6 +48,8 @@ void AWeapon::OnWeaponOverlap(UPrimitiveComponent* OverlappedComponent, AActor* 
 	//아직 무기 주인이 없다면,
 	if(IsValid(Master) == false)
 		return;
+	if (Master->ThisMasterOtherClient == true)
+		return;
 
 	if (IsValid(OtherActor) == true)
 	{
