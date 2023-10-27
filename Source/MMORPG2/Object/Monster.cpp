@@ -12,11 +12,10 @@
 #include "MyAnimInstance.h"
 #include "Engine/DamageEvents.h"
 #include "Managers/UIManager.h"
-#include "MonsterController.h"
 #include "Network/ClientPacketHandler.h"
 #include "UI/InGameUI.h"
 #include "UI/MonsterUI.h"
-#include "HpBarWidget.h"
+#include "UI/HpBarWidget.h"
 #include "Kismet/GameplayStatics.h"
 #include "Components/WidgetComponent.h"
 
@@ -25,10 +24,6 @@
 AMonster::AMonster()
 {
 	//Init();
-
-
-	AIControllerClass = AMonsterController::StaticClass();
-	AutoPossessAI = EAutoPossessAI::PlacedInWorldOrSpawned;
 }
 
 void AMonster::BeginPlay()
@@ -106,7 +101,7 @@ void AMonster::OnDead()
 	//GetCapsuleComponent()->SetCollisionProfileName(TEXT("Item"));
 }
 
-void AMonster::RotationToTarget()
+void AMonster::BindTarget()
 {
 		ACreature* target= GameInstance->GetObjectManager()->GetPlayerByID(GetInfo()->targetid());
 
@@ -147,10 +142,6 @@ void AMonster::RotationToTarget()
 			hpBar->SetVisibility(ESlateVisibility::Visible);
 			IsTracking = true;
 		}
-
-		//FRotator look = UKismetMathLibrary::FindLookAtRotation(GetActorLocation(), target->GetActorLocation());
-		//look.Pitch = 0;
-		//SetActorRelativeRotation(look);
 }
 
 void AMonster::SyncPos()
@@ -209,7 +200,7 @@ void AMonster::UpdateInfo(Protocol::ObjectInfo* info)
 	rotation.Pitch = Info.position().rotationy();
 	rotation.Yaw = Info.position().rotationz();
 
-	RotationToTarget();
+	BindTarget();
 	FVector velocity;
 	velocity.X = Info.position().velocityx();
 	velocity.Y = Info.position().velocityy();

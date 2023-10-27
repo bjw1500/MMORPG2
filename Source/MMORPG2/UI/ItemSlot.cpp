@@ -92,7 +92,4 @@ void UItemSlot::RefreshUI()
 		Text->SetText (FText::FromString(TEXT("장착 중")));
 	else
 		Text->SetText (FText::FromString(TEXT(" ")));
-
-	//FString log = FString::Printf(TEXT("IsEquipped % d"), Item.isequipped());
-	//Utils::DebugLog(log);
 }

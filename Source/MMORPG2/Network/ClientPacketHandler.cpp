@@ -14,7 +14,7 @@
 #include "Protocol.pb.h"
 #include "MMORPG2GameModeBase.h"
 #include "StatComponent.h"
-#include "TitleWidget.h"
+#include "UI/TitleWidget.h"
 #include "Components/TextBlock.h"
 #include "Components/EditableText.h"
 #include "Components/Button.h"

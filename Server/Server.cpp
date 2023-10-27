@@ -29,7 +29,6 @@ int main()
 
 	GDataManager = new DataManager();
 
-
 	SocketUtils::Init();
 	ServerServiceRef service = make_shared<ServerService>(
 		NetAddress(L"127.0.0.1", 7777),
@@ -51,6 +50,7 @@ int main()
 			});
 	}
 
+	//임시 코드
 	//0 -5000 // -5000 -10000
 	GRoom->EnterMonster(0, -5000, 50);
 	GRoom->EnterMonster(-3000, -6000, 50);

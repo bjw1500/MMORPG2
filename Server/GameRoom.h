@@ -12,7 +12,7 @@ public:
 	void Update(float deltaTime);
 
 
-	//플레이어 입장
+	//InGame
 	void EnterPlayer(GameSessionRef session, int32 selectedNumber = 0);
 	void EnterMonster(int x, int y, int z);
 	void EnterBoss();

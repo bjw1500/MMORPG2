@@ -20,18 +20,15 @@ public:
 
 	bool Init(wstring ip = L"127.0.0.1");
 	ServerSessionRef GetSession() { return _session; };
-
 	ServerSessionRef CreateSession();
 	void SendPacket(SendBufferRef buffer);
 	void Disconnect();
-	//static NetworkManager* GetNetworkManager();
 
 
 private:
 	ClientServiceRef _service;
 	ServerSessionRef _session;
 	bool IsInit = false;
-	//static TSharedPtr<NetworkManager> _networkManager;
 };
 
 class ThreadManager
@@ -69,11 +66,7 @@ public:
 	PacketQueue() {}
 	~PacketQueue() {}
 
-
-	//static PacketQueue* GetInstance();
-
 	void Push(PacketMessage message) {
-		//lock_guard<mutex> lock (_lock);
 		_packetQueue.push(message);
 
 	}

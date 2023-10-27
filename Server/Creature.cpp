@@ -101,13 +101,6 @@ void Creature::UnBindTarget()
 	currentPos.set_velocityy(0);
 	currentPos.set_velocityz(0);
 	SetPos(currentPos);
-	//SetState(Idle);
-
-	//Protocol::S_Move pkt;
-	//Protocol::ObjectInfo* sInfo = pkt.mutable_info();
-	//sInfo->CopyFrom(GetInfo());
-	//SendBufferRef sendBuffer = ServerPacketHandler::MakeSendBuffer(pkt, S_MOVE);
-	//GetRoomRef()->BroadCast(sendBuffer);
 }
 
 int32 Creature::GetAttackIndex()

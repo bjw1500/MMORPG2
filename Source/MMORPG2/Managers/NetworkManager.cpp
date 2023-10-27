@@ -24,7 +24,6 @@ bool NetworkManager::Init(wstring ip)
 		return false;
 	if (GameInstance->bOnline == false)
 	{
-		//GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Yellow, FString::Printf(TEXT("Online is false")));
 		return false;
 	}
 

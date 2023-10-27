@@ -5,20 +5,19 @@ public:
 	GameObject();
 	~GameObject();
 
-
+	//In Game
 	virtual void Update(float deltaTime);
 	virtual void UpdateInfo();
 	float GetDistanceFromTarget(Protocol::Position pos);
 
 
 
-	/////////////
+
+	//Get Set
 	Protocol::ObjectInfo& GetInfo() { return _info; };
 	void SetInfo(Protocol::ObjectInfo& info) {_info.CopyFrom(info); };
-
 	Protocol::Position GetPos() { return _info.position(); }
 	void SetPos(Protocol::Position pos) { _info.mutable_position()->CopyFrom(pos);  }
-
 	int32 GetHP() { return _info.stat().hp(); }
 	void SetHP(int32 value){
 

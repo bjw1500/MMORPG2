@@ -244,7 +244,6 @@ bool Player::OnDead(Protocol::ObjectInfo damageCauser)
 	playerDb->Pos.set_locationz(200);
 
 	shared_ptr<Player> thisPlayer = static_pointer_cast<Player>(shared_from_this());
-	GetRoomRef()->Remove(GetInfo());
 	GetRoomRef()->Revive(GetSession(), playerDb);
 	//데이터 베이스에 저장.
 	DBConnection* db = GDBConnectionPool->Pop();
@@ -276,6 +275,21 @@ void Player::AddExp(int32 value)
 	int32 currentExp = currentStat->totalexp();
 	int32 nextExp = currentExp + value;
 	currentStat->set_totalexp(nextExp);
+}
+
+void Player::Disconnect()
+{
+	Protocol::ObjectInfo info = GetInfo();
+	GetRoomRef()->Remove(GetInfo());
+	GetSession()->Send(ServerPacketHandler::Make_S_Disconnect(info));
+
+	//연결이 끊어지면 데이터 베이스에 저장.
+	DBConnection* db = GDBConnectionPool->Pop();
+	shared_ptr<Player> thisPlayer = static_pointer_cast<Player>(shared_from_this());
+	db->SavePlayerInfo(thisPlayer);
+	GDBConnectionPool->Push(db);
+
+	printf("ID[%d], Name[%s]의 연결이 끊어졌습니다.", info.id(), info.name().c_str());
 }
 
 void Player::SetUsingWeapon(Protocol::ItemInfo* weapon)

@@ -1,76 +1,14 @@
-﻿  Creature.cpp
-D:\unreal\Server_Unreal\MMORPG2\Server\GameObject.h(41,48): warning C4244: 'return': 'float'에서 'int32'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-D:\unreal\Server_Unreal\MMORPG2\Server\GameObject.h(42,66): warning C4244: '인수': 'int32'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-D:\unreal\Server_Unreal\MMORPG2\Server\GameObject.h(44,50): warning C4244: 'return': 'float'에서 'int32'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-D:\unreal\Server_Unreal\MMORPG2\Server\GameObject.h(45,67): warning C4244: '인수': 'int32'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-  DBConnection.cpp
-D:\unreal\Server_Unreal\MMORPG2\Server\GameObject.h(41,48): warning C4244: 'return': 'float'에서 'int32'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-D:\unreal\Server_Unreal\MMORPG2\Server\GameObject.h(42,66): warning C4244: '인수': 'int32'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-D:\unreal\Server_Unreal\MMORPG2\Server\GameObject.h(44,50): warning C4244: 'return': 'float'에서 'int32'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-D:\unreal\Server_Unreal\MMORPG2\Server\GameObject.h(45,67): warning C4244: '인수': 'int32'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-D:\unreal\Server_Unreal\MMORPG2\Server\DBConnection.cpp(280,29): warning C4244: '인수': 'int32'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-D:\unreal\Server_Unreal\MMORPG2\Server\DBConnection.cpp(281,29): warning C4244: '인수': 'int32'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-D:\unreal\Server_Unreal\MMORPG2\Server\DBConnection.cpp(282,29): warning C4244: '인수': 'int32'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-D:\unreal\Server_Unreal\MMORPG2\Server\DBConnection.cpp(406,13): warning C4244: '초기화 중': 'float'에서 'int32'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-D:\unreal\Server_Unreal\MMORPG2\Server\DBConnection.cpp(409,13): warning C4244: '초기화 중': 'float'에서 'int32'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-D:\unreal\Server_Unreal\MMORPG2\Server\DBConnection.cpp(412,13): warning C4244: '초기화 중': 'float'에서 'int32'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-D:\unreal\Server_Unreal\MMORPG2\Server\DBConnection.cpp(515,13): warning C4267: '초기화 중': 'size_t'에서 'int32'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-D:\unreal\Server_Unreal\MMORPG2\Server\DBConnection.cpp(557,12): warning C4101: 'retcode' :참조되지 않은 지역 변수입니다.
-  GameObject.cpp
-D:\unreal\Server_Unreal\MMORPG2\Server\GameObject.h(41,48): warning C4244: 'return': 'float'에서 'int32'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-D:\unreal\Server_Unreal\MMORPG2\Server\GameObject.h(42,66): warning C4244: '인수': 'int32'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-D:\unreal\Server_Unreal\MMORPG2\Server\GameObject.h(44,50): warning C4244: 'return': 'float'에서 'int32'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-D:\unreal\Server_Unreal\MMORPG2\Server\GameObject.h(45,67): warning C4244: '인수': 'int32'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-D:\unreal\Server_Unreal\MMORPG2\Server\GameObject.cpp(35,10): warning C4244: '초기화 중': 'float'에서 'int32'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-D:\unreal\Server_Unreal\MMORPG2\Server\GameObject.cpp(36,10): warning C4244: '초기화 중': 'float'에서 'int32'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-D:\unreal\Server_Unreal\MMORPG2\Server\GameObject.cpp(37,10): warning C4244: '초기화 중': 'float'에서 'int32'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-D:\unreal\Server_Unreal\MMORPG2\Server\GameObject.cpp(39,13): warning C4244: 'return': 'double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-  GameRoom.cpp
-D:\unreal\Server_Unreal\MMORPG2\Server\GameObject.h(41,48): warning C4244: 'return': 'float'에서 'int32'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-D:\unreal\Server_Unreal\MMORPG2\Server\GameObject.h(42,66): warning C4244: '인수': 'int32'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-D:\unreal\Server_Unreal\MMORPG2\Server\GameObject.h(44,50): warning C4244: 'return': 'float'에서 'int32'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-D:\unreal\Server_Unreal\MMORPG2\Server\GameObject.h(45,67): warning C4244: '인수': 'int32'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-D:\unreal\Server_Unreal\MMORPG2\Server\GameRoom.cpp(149,26): warning C4244: '인수': 'int'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-D:\unreal\Server_Unreal\MMORPG2\Server\GameRoom.cpp(150,26): warning C4244: '인수': 'int'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-D:\unreal\Server_Unreal\MMORPG2\Server\GameRoom.cpp(151,26): warning C4244: '인수': 'int'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-D:\unreal\Server_Unreal\MMORPG2\Server\GameRoom.cpp(348,70): warning C4244: '인수': 'float'에서 'int32'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-  GameSession.cpp
-D:\unreal\Server_Unreal\MMORPG2\Server\GameObject.h(41,48): warning C4244: 'return': 'float'에서 'int32'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-D:\unreal\Server_Unreal\MMORPG2\Server\GameObject.h(42,66): warning C4244: '인수': 'int32'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-D:\unreal\Server_Unreal\MMORPG2\Server\GameObject.h(44,50): warning C4244: 'return': 'float'에서 'int32'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-D:\unreal\Server_Unreal\MMORPG2\Server\GameObject.h(45,67): warning C4244: '인수': 'int32'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-  Grux.cpp
-D:\unreal\Server_Unreal\MMORPG2\Server\GameObject.h(41,48): warning C4244: 'return': 'float'에서 'int32'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-D:\unreal\Server_Unreal\MMORPG2\Server\GameObject.h(42,66): warning C4244: '인수': 'int32'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-D:\unreal\Server_Unreal\MMORPG2\Server\GameObject.h(44,50): warning C4244: 'return': 'float'에서 'int32'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-D:\unreal\Server_Unreal\MMORPG2\Server\GameObject.h(45,67): warning C4244: '인수': 'int32'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-  Inventory.cpp
-D:\unreal\Server_Unreal\MMORPG2\Server\GameObject.h(41,48): warning C4244: 'return': 'float'에서 'int32'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-D:\unreal\Server_Unreal\MMORPG2\Server\GameObject.h(42,66): warning C4244: '인수': 'int32'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-D:\unreal\Server_Unreal\MMORPG2\Server\GameObject.h(44,50): warning C4244: 'return': 'float'에서 'int32'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-D:\unreal\Server_Unreal\MMORPG2\Server\GameObject.h(45,67): warning C4244: '인수': 'int32'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-  Item.cpp
-D:\unreal\Server_Unreal\MMORPG2\Server\GameObject.h(41,48): warning C4244: 'return': 'float'에서 'int32'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-D:\unreal\Server_Unreal\MMORPG2\Server\GameObject.h(42,66): warning C4244: '인수': 'int32'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-D:\unreal\Server_Unreal\MMORPG2\Server\GameObject.h(44,50): warning C4244: 'return': 'float'에서 'int32'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-D:\unreal\Server_Unreal\MMORPG2\Server\GameObject.h(45,67): warning C4244: '인수': 'int32'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-  Monster.cpp
-D:\unreal\Server_Unreal\MMORPG2\Server\GameObject.h(41,48): warning C4244: 'return': 'float'에서 'int32'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-D:\unreal\Server_Unreal\MMORPG2\Server\GameObject.h(42,66): warning C4244: '인수': 'int32'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-D:\unreal\Server_Unreal\MMORPG2\Server\GameObject.h(44,50): warning C4244: 'return': 'float'에서 'int32'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-D:\unreal\Server_Unreal\MMORPG2\Server\GameObject.h(45,67): warning C4244: '인수': 'int32'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-D:\unreal\Server_Unreal\MMORPG2\Server\Monster.cpp(203,16): warning C4244: '+=': 'float'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-D:\unreal\Server_Unreal\MMORPG2\Server\Monster.cpp(386,27): warning C4244: '인수': 'double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-  Player.cpp
-D:\unreal\Server_Unreal\MMORPG2\Server\GameObject.h(41,48): warning C4244: 'return': 'float'에서 'int32'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-D:\unreal\Server_Unreal\MMORPG2\Server\GameObject.h(42,66): warning C4244: '인수': 'int32'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-D:\unreal\Server_Unreal\MMORPG2\Server\GameObject.h(44,50): warning C4244: 'return': 'float'에서 'int32'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-D:\unreal\Server_Unreal\MMORPG2\Server\GameObject.h(45,67): warning C4244: '인수': 'int32'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-D:\unreal\Server_Unreal\MMORPG2\Server\Player.cpp(265,28): warning C4244: '인수': 'int32'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-  ServerPacketHandler.cpp
-D:\unreal\Server_Unreal\MMORPG2\Server\GameObject.h(41,48): warning C4244: 'return': 'float'에서 'int32'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-D:\unreal\Server_Unreal\MMORPG2\Server\GameObject.h(42,66): warning C4244: '인수': 'int32'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-D:\unreal\Server_Unreal\MMORPG2\Server\GameObject.h(44,50): warning C4244: 'return': 'float'에서 'int32'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-D:\unreal\Server_Unreal\MMORPG2\Server\GameObject.h(45,67): warning C4244: '인수': 'int32'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-  코드를 생성하고 있습니다...
+﻿ServerCore.lib(SendBuffer.obj) : warning LNK4099: '' PDB를 'ServerCore.lib(SendBuffer.obj)' 또는 ''에서 찾을 수 없습니다. 디버그 정보가 없는 것처럼 개체를 링크합니다.
+ServerCore.lib(Session.obj) : warning LNK4099: '' PDB를 'ServerCore.lib(Session.obj)' 또는 ''에서 찾을 수 없습니다. 디버그 정보가 없는 것처럼 개체를 링크합니다.
+ServerCore.lib(NetAddress.obj) : warning LNK4099: '' PDB를 'ServerCore.lib(NetAddress.obj)' 또는 ''에서 찾을 수 없습니다. 디버그 정보가 없는 것처럼 개체를 링크합니다.
+ServerCore.lib(SocketUtils.obj) : warning LNK4099: '' PDB를 'ServerCore.lib(SocketUtils.obj)' 또는 ''에서 찾을 수 없습니다. 디버그 정보가 없는 것처럼 개체를 링크합니다.
+ServerCore.lib(IocpCore.obj) : warning LNK4099: '' PDB를 'ServerCore.lib(IocpCore.obj)' 또는 ''에서 찾을 수 없습니다. 디버그 정보가 없는 것처럼 개체를 링크합니다.
+ServerCore.lib(ThreadManager.obj) : warning LNK4099: '' PDB를 'ServerCore.lib(ThreadManager.obj)' 또는 ''에서 찾을 수 없습니다. 디버그 정보가 없는 것처럼 개체를 링크합니다.
+ServerCore.lib(Service.obj) : warning LNK4099: '' PDB를 'ServerCore.lib(Service.obj)' 또는 ''에서 찾을 수 없습니다. 디버그 정보가 없는 것처럼 개체를 링크합니다.
+ServerCore.lib(CoreGlobal.obj) : warning LNK4099: '' PDB를 'ServerCore.lib(CoreGlobal.obj)' 또는 ''에서 찾을 수 없습니다. 디버그 정보가 없는 것처럼 개체를 링크합니다.
+ServerCore.lib(pch.obj) : warning LNK4099: '' PDB를 'ServerCore.lib(pch.obj)' 또는 ''에서 찾을 수 없습니다. 디버그 정보가 없는 것처럼 개체를 링크합니다.
+ServerCore.lib(IocpEvent.obj) : warning LNK4099: '' PDB를 'ServerCore.lib(IocpEvent.obj)' 또는 ''에서 찾을 수 없습니다. 디버그 정보가 없는 것처럼 개체를 링크합니다.
+ServerCore.lib(RecvBuffer.obj) : warning LNK4099: '' PDB를 'ServerCore.lib(RecvBuffer.obj)' 또는 ''에서 찾을 수 없습니다. 디버그 정보가 없는 것처럼 개체를 링크합니다.
+ServerCore.lib(CoreTLS.obj) : warning LNK4099: '' PDB를 'ServerCore.lib(CoreTLS.obj)' 또는 ''에서 찾을 수 없습니다. 디버그 정보가 없는 것처럼 개체를 링크합니다.
+ServerCore.lib(Listener.obj) : warning LNK4099: '' PDB를 'ServerCore.lib(Listener.obj)' 또는 ''에서 찾을 수 없습니다. 디버그 정보가 없는 것처럼 개체를 링크합니다.
   Server.vcxproj -> D:\unreal\Server_Unreal\MMORPG2\Server\Binaries\x64\Server.exe

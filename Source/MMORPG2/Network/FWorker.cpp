@@ -6,8 +6,6 @@
 
 FWorker::FWorker(function<void(void)> callback) : _callback(callback)
 {
-	//FString string = *FString::Printf(TEXT("Create Worker"));
-	//Utils::DebugLog(string);
 	bRunThread = true;
 	Thread = FRunnableThread::Create(this, TEXT("Thread ID 0"), 0, TPri_BelowNormal);
 }
@@ -35,8 +33,6 @@ bool FWorker::Init()
 uint32 FWorker::Run()
 {
 
-	// recv while loop ����
-	// StopTaskCounter Ŭ���� ������ ����� Thread Safety�ϰ� ����
 	while (bRunThread)
 	{
 		//Utils::DebugLog(TEXT("Dispatch"));
@@ -50,9 +46,4 @@ void FWorker::Stop()
 {
 	//Utils::DebugLog(TEXT("Woker Run Stop"));
 	bRunThread = false;
-
-	//Thread->WaitForCompletion();
-	//Thread->Kill();
-	//delete Thread;
-	//Thread = nullptr;
 }

@@ -17,19 +17,56 @@ UCLASS(config = Game)
 class ACreature : public ACharacter
 {
 	GENERATED_BODY()
-
-		/** Camera boom positioning the camera behind the character */
-		UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
-		class USpringArmComponent* CameraBoom;
-
-	/** Follow camera */
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
-		class UCameraComponent* FollowCamera;
-
-
 public:
 	ACreature();
 	virtual bool Init();
+
+protected:
+
+	// To add mapping context
+	virtual void BeginPlay();
+
+	virtual void PostInitializeComponents();
+
+	virtual void LoadStat(int id);
+
+public:
+	FORCEINLINE class USpringArmComponent* GetCameraBoom() const { return CameraBoom; }
+	FORCEINLINE class UCameraComponent* GetFollowCamera() const { return FollowCamera; }
+
+	UPROPERTY()
+		class UMyAnimInstance* Anim;
+
+	UPROPERTY()
+		class UStatComponent* Stat;
+
+	UPROPERTY()
+		class USkillComponent* Skill;
+
+	UPROPERTY()
+		class UWidgetComponent* HpBar;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+		UCapsuleComponent* WeaponCollision;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+		UCapsuleComponent* HitBoxCollision;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
+		class USpringArmComponent* CameraBoom;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
+		class UCameraComponent* FollowCamera;
+
+public:
+
+	UFUNCTION()
+		void OnAttackMontageEnd(UAnimMontage* Montage, bool bInterrupted);
+
+	UFUNCTION()
+		void OnRollingMontageEnd(UAnimMontage* Montage, bool bInterrupted);
+
+	UFUNCTION()
+		void OnSkill_1MontageEnd(UAnimMontage* Montage, bool bInterrupted);
 
 public:
 	//Action
@@ -49,51 +86,6 @@ public:
 	void ActiveSkill_1();
 	void ActiveSkill_2();
 	void ActiveSkill_3();
-
-
-
-protected:
-	
-	// To add mapping context
-	virtual void BeginPlay();
-
-	virtual void PostInitializeComponents();
-
-	virtual void LoadStat(int id);
-
-public:
-	/** Returns CameraBoom subobject **/
-	FORCEINLINE class USpringArmComponent* GetCameraBoom() const { return CameraBoom; }
-	/** Returns FollowCamera subobject **/
-	FORCEINLINE class UCameraComponent* GetFollowCamera() const { return FollowCamera; }
-
-	UPROPERTY()
-	class UMyAnimInstance* Anim;
-
-	UPROPERTY()
-	class UStatComponent* Stat;
-
-	UPROPERTY()
-	class USkillComponent* Skill;
-
-	UPROPERTY()
-	class UWidgetComponent* HpBar;
-
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
-	UCapsuleComponent* WeaponCollision;
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
-	UCapsuleComponent* HitBoxCollision;
-
-public:
-
-	UFUNCTION()
-	void OnAttackMontageEnd(UAnimMontage* Montage, bool bInterrupted);
-
-	UFUNCTION()
-	void OnRollingMontageEnd(UAnimMontage* Montage, bool bInterrupted);
-
-	UFUNCTION()
-	void OnSkill_1MontageEnd(UAnimMontage* Montage, bool bInterrupted);
 
 	//Animation Move
 public:

@@ -24,7 +24,7 @@
 #include "Engine/DamageEvents.h"
 #include "Components/WidgetComponent.h"
 #include "GameStruct.h"
-#include "HpBarWidget.h"
+#include "UI/HpBarWidget.h"
 #include "Weapon.h"
 #include "Managers/UIManager.h"
 #include "UI/InGameUI.h"

@@ -28,11 +28,9 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void OnWeaponOverlapEnd(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
 
-
-
 	float TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser) override;
 	void OnDead() override;
-	void RotationToTarget();
+	void BindTarget();
 	virtual void SyncPos() override;
 
 	void UpdateInfo(Protocol::ObjectInfo* info) override;

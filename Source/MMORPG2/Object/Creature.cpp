@@ -23,7 +23,7 @@
 #include "Engine/DamageEvents.h"
 #include "Components/WidgetComponent.h"
 #include "Object/GameStruct.h"
-#include "HpBarWidget.h"
+#include "UI/HpBarWidget.h"
 #include "Skill/SkillComponent.h"
 
 ACreature::ACreature()
@@ -426,7 +426,7 @@ void ACreature::OnDead()
 	Anim->SetState(Protocol::CreatureState::Dead);
 	Anim->OnDead();
 
-	GameInstance->GetObjectManager()->DespawnObject(GetInfo());
+	//GameInstance->GetObjectManager()->DespawnObject(GetInfo());
 
 }
 
