@@ -9,6 +9,8 @@
 /**
  * 
  */
+class UNPCUI;
+
 UCLASS()
 class MMORPG2_API UNPCUI : public UUserWidget
 {
@@ -36,5 +38,6 @@ public:
 
 	UPROPERTY()
 	class ANPC* Master;
+
 
 };

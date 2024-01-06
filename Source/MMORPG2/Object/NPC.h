@@ -37,13 +37,16 @@ public:
 	void InteractPlayer();
 public:
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "UI")
+	class UNPCUI* NpcUI;
+
 	UPROPERTY(EditAnyWhere)
 	USphereComponent* InteractCollision;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Server")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "UI")
 	TSubclassOf<class UShopItemList> ShopItemListClass;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Server")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "UI")
 	TSubclassOf<class UNPCUI> NPCUIClass;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Server")

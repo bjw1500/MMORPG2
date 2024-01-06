@@ -173,6 +173,7 @@ void ACreature::Move(const FInputActionValue& Value)
 
 		// get right vector 
 		const FVector RightDirection = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::Y);
+	
 
 		// add movement 
 		Horizontal = MovementVector.X;

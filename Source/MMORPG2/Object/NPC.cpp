@@ -85,10 +85,10 @@ void ANPC::InteractPlayer()
 	if (IsValid(NPCUIClass) == false)
 		return;
 
-	UNPCUI* npcUI = CreateWidget<UNPCUI>(GetWorld(), NPCUIClass);
-	GameInstance->GetUIManager()->PopUI = npcUI;
-	npcUI->AddToViewport();
-	npcUI->Master = this;
+	NpcUI = CreateWidget<UNPCUI>(GetWorld(), NPCUIClass);
+	GameInstance->GetUIManager()->PopUI = NpcUI;
+	NpcUI->AddToViewport();
+	NpcUI->Master = this;
 
 }
 

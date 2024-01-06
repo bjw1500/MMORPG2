@@ -458,7 +458,8 @@ void GameRoom::HandleChat(Protocol::C_Chat& chatPacket)
 
 	pkt.set_id(chatPacket.id());
 	pkt.set_name(player->GetInfo().name());
-	string sendMsg = std::format("[{}]:{}", player->GetInfo().name(), chatPacket.msg());
+	//string sendMsg = std::format("[{}]:{}", player->GetInfo().name(), chatPacket.msg());
+	string sendMsg = std::format("{}", chatPacket.msg());
 	pkt.set_msg(sendMsg);
 
 	SendBufferRef sendBuffer = ServerPacketHandler::MakeSendBuffer(pkt, S_CHAT);

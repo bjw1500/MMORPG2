@@ -9,6 +9,7 @@
 #include "Components/ScrollBox.h"
 #include "Components/WidgetComponent.h"
 #include "Components/TextBlock.h"
+#include "Managers/ObjectManager.h"
 #include "ChatMessage.h"
 
 
@@ -32,10 +33,26 @@ void UChatWidget::UpdateChat(FString& msg)
 void UChatWidget::SendChat()
 {
 	FString msg = MessageText->GetText().ToString();
+	
+	FString msg2;
+
+	FString playerName =  *FString(GameInstance->GetObjectManager()->GetMyPlayer()->GetInfo()->name().c_str());
+	msg2.Append(playerName);
+	msg2.Append(":");
+	msg2.Append(msg);
 
 	if(GameInstance->bConnected == true)
-		GameInstance->GetPacketHandler()->Make_C_Chat(msg);
+		GameInstance->GetPacketHandler()->Make_C_Chat(msg2);
 	
+	FText empty = FText::FromString(TEXT(""));
+	MessageText->SetText(empty);
+}
+
+void UChatWidget::SendChatByRef(UPARAM(ref)FString& msg)
+{
+	if (GameInstance->bConnected == true)
+		GameInstance->GetPacketHandler()->Make_C_Chat(msg);
+
 	FText empty = FText::FromString(TEXT(""));
 	MessageText->SetText(empty);
 }

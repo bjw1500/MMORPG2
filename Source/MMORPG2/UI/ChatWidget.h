@@ -17,9 +17,12 @@ public:
 
 	
 	UFUNCTION(BlueprintCallable, Category = "Server")
-	void UpdateChat(FString& msg);
+	void UpdateChat(UPARAM(ref) FString& msg);
 	UFUNCTION(BlueprintCallable, Category = "Server")
 	void SendChat();
+
+	UFUNCTION(BlueprintCallable, Category = "Server")
+	void SendChatByRef(UPARAM(ref) FString& msg);
 
 	void ShowChat();
 
